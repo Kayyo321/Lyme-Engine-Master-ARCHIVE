@@ -61,9 +61,16 @@ class ChartingState extends MusicBeatState
 
 	var highlight:FlxSprite;
 
+	// var tabs:Array<String>;
+
+	var hitsounds:FlxUICheckBox;
+
 	var GRID_SIZE:Int = 40;
 
 	var dummyArrow:FlxSprite;
+	var dddd:FlxSprite;
+
+	var cyanUwU:FlxUICheckBox;
 
 	var curRenderedNotes:FlxTypedGroup<Note>;
 	var curRenderedSustains:FlxTypedGroup<FlxSprite>;
@@ -72,7 +79,7 @@ class ChartingState extends MusicBeatState
 
 	var _song:SwagSong;
 
-	var hitsounds:FlxUICheckBox;
+	var dummyX:FlxUICheckBox;
 
 	var typingShit:FlxInputText;
 	/*
@@ -89,12 +96,16 @@ class ChartingState extends MusicBeatState
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
 
+	var xArrow:Bool;
+
+	var cYaN:Bool = false;
+
 	override function create()
 	{
 		curSection = lastSection;
 
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
-		gridBG.color = FlxColor.CYAN;
+		// gridBG.color = FlxColor.CYAN;
 		add(gridBG);
 
 		leftIcon = new HealthIcon('bf');
@@ -119,11 +130,28 @@ class ChartingState extends MusicBeatState
 
 		// var hitSoundY = stepperSpeed.y;
 
-		hitsounds = new FlxUICheckBox(10, 150, null, null, "Play hitsounds", 100);
+		hitsounds = new FlxUICheckBox(10, 250, null, null, "Play Hitsounds", 100);
 		hitsounds.checked = false;
+		hitsounds.color = FlxColor.WHITE;
 		hitsounds.callback = function()
 		{
 			playClaps = hitsounds.checked;
+		};
+
+		cyanUwU = new FlxUICheckBox(10, 150, null, null, "Dark Theme", 100);
+		cyanUwU.checked = false;
+		cyanUwU.color = FlxColor.WHITE;
+		cyanUwU.callback = function()
+		{
+			cYaN = cyanUwU.checked;
+		};
+
+		dummyX = new FlxUICheckBox(10, 300, null, null, "Dummy Arrow", 100);
+		dummyX.checked = true;
+		dummyX.color = FlxColor.WHITE;
+		dummyX.callback = function()
+		{
+			xArrow = dummyX.checked;
 		};
 
 		if (PlayState.SONG != null)
@@ -164,8 +192,14 @@ class ChartingState extends MusicBeatState
 		strumLine = new FlxSprite(0, 50).makeGraphic(Std.int(FlxG.width / 2), 4);
 		add(strumLine);
 
+		// dummyArrow = new FlxSprite().makeGraphic(GRID_SIZE, GRID_SIZE);
+		// add(dummyArrow);
+
 		dummyArrow = new FlxSprite().makeGraphic(GRID_SIZE, GRID_SIZE);
 		add(dummyArrow);
+
+		dddd = new FlxSprite(dummyArrow.x, dummyArrow.y).loadGraphic(Paths.image('xxxx'));
+		add(dddd);
 
 		var tabs = [
 			{name: "Song", label: 'Song'},
@@ -242,6 +276,8 @@ class ChartingState extends MusicBeatState
 		stepperBPM.name = 'song_bpm';
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		var bgColors:Array<String> = CoolUtil.coolTextFile(Paths.txt('bgColors'));
+		// var arrowColors:Array<String> = CoolUtil.coolTextFile(Paths.txt('arrowColors'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -253,7 +289,6 @@ class ChartingState extends MusicBeatState
 		{
 			_song.player2 = characters[Std.parseInt(character)];
 		});
-
 		player2DropDown.selectedLabel = _song.player2;
 
 		var tab_group_song = new FlxUI(null, UI_box);
@@ -271,6 +306,8 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
 		tab_group_song.add(hitsounds);
+		tab_group_song.add(dummyX);
+		tab_group_song.add(cyanUwU);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -396,7 +433,9 @@ class ChartingState extends MusicBeatState
 
 		// general shit
 		var title:FlxText = new FlxText(UI_box.x + 20, UI_box.y + 20, 0);
+		title.color = FlxColor.BLACK;
 		bullshitUI.add(title);
+		//bullshitUI.color = FlxColor.BLACK;
 		/* 
 			var loopCheck = new FlxUICheckBox(UI_box.x + 10, UI_box.y + 50, null, null, "Loops", 100, ['loop check']);
 			loopCheck.checked = curNoteSelected.doesLoop;
@@ -556,26 +595,55 @@ class ChartingState extends MusicBeatState
 						if(!claps.contains(note))
 						{
 							claps.push(note);
-							if (!check_mustHitSection.checked)
-								FlxG.sound.play(Paths.sound('SNAP'));
-							else 
-								FlxG.sound.play(Paths.sound('SNAPbf'));
+							FlxG.sound.play(Paths.sound('SNAP'));
 						}
 					});
 				}
 			});
 		}
 
+		// if (xArrow)
+		// {
+		// 	dummyArrow
+		// }
+
 		if (FlxG.mouse.x > gridBG.x
 			&& FlxG.mouse.x < gridBG.x + gridBG.width
 			&& FlxG.mouse.y > gridBG.y
 			&& FlxG.mouse.y < gridBG.y + (GRID_SIZE * _song.notes[curSection].lengthInSteps))
 		{
+			dummyArrow.visible = true;
+			dddd.visible = false;
 			dummyArrow.x = Math.floor(FlxG.mouse.x / GRID_SIZE) * GRID_SIZE;
 			if (FlxG.keys.pressed.SHIFT)
 				dummyArrow.y = FlxG.mouse.y;
 			else
 				dummyArrow.y = Math.floor(FlxG.mouse.y / GRID_SIZE) * GRID_SIZE;
+
+			if (xArrow)
+			{
+				dummyArrow.visible = true;
+			}
+			else
+			{
+				dummyArrow.visible = false;
+			}
+		}
+		else 
+		{
+			dddd.visible = false;
+			dummyArrow.visible = false;
+		}
+
+		if (cYaN)
+		{
+			gridBG.color = FlxColor.GRAY;
+			UI_box.color = FlxColor.GRAY;
+		}
+		else 
+		{
+			gridBG.color = FlxColor.WHITE;
+			UI_box.color = FlxColor.WHITE;
 		}
 
 		if (FlxG.keys.justPressed.ENTER)

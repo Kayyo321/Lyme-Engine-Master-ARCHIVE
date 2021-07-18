@@ -183,7 +183,7 @@ class PlayState extends MusicBeatState
 					"You're going to have to go \nthrough ME first!"
 				];
 			case 'fresh':
-				dialogue = ["Not too shabby boy.", ""];
+				dialogue = ["Not too shabby boy.", "UwU punch me harder daddy"];
 			case 'dadbattle':
 				dialogue = [
 					"gah you think you're hot stuff?",
@@ -237,7 +237,7 @@ class PlayState extends MusicBeatState
 		detailsPausedText = "Paused - " + detailsText;
 		
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC + "Lyme Engine ;)");
 		#end
 
 		switch (SONG.song.toLowerCase())
@@ -2035,16 +2035,20 @@ class PlayState extends MusicBeatState
 		{
 			daRating = 'shit';
 			score = 50;
+			if (!FlxG.save.data.newInput)
+				noteMiss();
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.75)
 		{
 			daRating = 'bad';
 			score = 100;
+			if (!FlxG.save.data.newInput)
+				noteMiss();
 		}
 		else if (noteDiff > Conductor.safeZoneOffset * 0.2)
 		{
 			daRating = 'good';
-			score = 200;
+			score = 200;	
 		}
 
 		songScore += score;
@@ -2361,7 +2365,7 @@ class PlayState extends MusicBeatState
 		});
 	}
 
-	function noteMiss(direction:Int = 1):Void
+	public function noteMiss(direction:Int = 1):Void
 	{
 		if (!boyfriend.stunned)
 		{

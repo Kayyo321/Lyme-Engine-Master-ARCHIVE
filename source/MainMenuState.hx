@@ -13,6 +13,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
 import io.newgrounds.NG;
 import lime.app.Application;
@@ -34,6 +35,8 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
+
+	var curDifficulty:Int = 1;
 
 	var pos:FlxText;
 
@@ -195,12 +198,11 @@ class MainMenuState extends MusicBeatState
 				}
 			}
 		}
-
+		
 		super.update(elapsed);
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{
-			
 			if (FlxG.keys.pressed.H)
 			{
 				spr.x--;
@@ -218,22 +220,6 @@ class MainMenuState extends MusicBeatState
 			{
 				spr.y++;
 			}
-
-			var sprX = spr.x;
-			var sprY = spr.y;
-
-			pos = new FlxText(75, 0, 0, "", 35);
-			pos.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.BLUE, RIGHT);
-			pos.scrollFactor.set();		
-			// add(pos);
-
-			pos.text = "[ " + sprX + " - " + sprY + " ]";
-
-			// trace(sprX + " - " + sprY);
-
-			// spr.x = 120;
-			// spr.y = 2;
-
 		});
 	}
 
@@ -253,14 +239,13 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
-				// spr.x += 3;
+				spr.x = FlxG.width / 2 - 475;
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
 			}
-			// else 
-			// {
-			// 	spr.x -= 25;
-			// }
-
+			else
+			{
+				spr.x = 120;
+			}
 			spr.updateHitbox();
 		});
 	}
