@@ -34,8 +34,11 @@ class OptionsMenu extends MusicBeatState
 		if (FlxG.save.data.dfjk == null)
 			FlxG.save.data.dfjk = false;
 
+		if (FlxG.save.data.middle == null)
+			FlxG.save.data.middle = false;
+
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile((FlxG.save.data.dfjk ? 'KeyBinds' : 'KeyBinds') + "\n" + (FlxG.save.data.newInput ? "Cleaner Inputs" : "Harsher Inputs") + "\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'));
+		controlsStrings = CoolUtil.coolStringFile((FlxG.save.data.dfjk ? 'KeyBinds' : 'KeyBinds') + "\n" + (FlxG.save.data.newInput ? "Cleaner Inputs" : "Harsher Inputs") + "\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll')  + "\n" + (FlxG.save.data.middle ? 'Middle Scroll Off' : 'Middle Scroll On'));
 		// uiStrings = CoolUtil.coolStringFile((FlxG.save.data.dfjk ? 'DFJK' : 'WASD') + "\n" + (FlxG.save.data.newInput ? "New input" : "Old Input") + "\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'));
 
 		trace(controlsStrings);
@@ -104,8 +107,7 @@ class OptionsMenu extends MusicBeatState
 						ctrl.targetY = curSelected;
 						grpControls.add(ctrl);
 						if (controls.ACCEPT)
-							FlxG.switchState(new KeyBindMenu());
-						
+							FlxG.switchState(new KeyBindMenu());	
 					case 1:
 						FlxG.save.data.newInput = !FlxG.save.data.newInput;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.newInput ? "Cleaner Inputs" : "Harsher Inputs"), true, false);
@@ -115,6 +117,12 @@ class OptionsMenu extends MusicBeatState
 					case 2:
 						FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
 						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
+						ctrl.isMenuItem = true;
+						ctrl.targetY = curSelected - 2;
+						grpControls.add(ctrl);
+					case 3:
+						FlxG.save.data.middle = !FlxG.save.data.middle;
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.middle ? 'Middle Scroll Off' : 'Middle Scroll On'), true, false);
 						ctrl.isMenuItem = true;
 						ctrl.targetY = curSelected - 2;
 						grpControls.add(ctrl);

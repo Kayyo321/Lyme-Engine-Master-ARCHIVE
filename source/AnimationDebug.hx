@@ -8,6 +8,9 @@ import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
+import flixel.animation.FlxBaseAnimation;
+import flixel.graphics.frames.FlxAtlasFrames;
 
 /**
 	*DEBUG MODE
@@ -21,9 +24,19 @@ class AnimationDebug extends FlxState
 	var dumbTexts:FlxTypedGroup<FlxText>;
 	var animList:Array<String> = [];
 	var curAnim:Int = 0;
+	var grabbed:Bool;
+	var newDummy:FlxSprite;
 	var isDad:Bool = true;
+	var dummy:FlxSprite;
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
+
+	var backspace:FlxSprite;
+	var hideInstructionsLOL:FlxText;
+	var moveBarLOL:FlxText;
+	var hideLOL:FlxText;
+	var bfAnimsLOL:FlxText;
+	var instructionsLOL:FlxText;
 
 	public function new(daAnim:String = 'spooky')
 	{
@@ -77,7 +90,49 @@ class AnimationDebug extends FlxState
 		camFollow.screenCenter();
 		add(camFollow);
 
+		FlxG.mouse.visible = true;
 		FlxG.camera.follow(camFollow);
+
+		instructionsLOL = new FlxText(FlxG.width / 2, 20, 0, "WASD (space to play idle) to play each animation (N & M to scroll through)", 12);
+		instructionsLOL.color = FlxColor.BLUE;
+		if (!isDad)
+			instructionsLOL.y -= 15;
+		instructionsLOL.scrollFactor.set();
+		add(instructionsLOL);
+
+		bfAnimsLOL = new FlxText(FlxG.width / 2, 35, 0, "IKJL to play miss animations", 12);
+		bfAnimsLOL.color = FlxColor.BLUE;
+		bfAnimsLOL.scrollFactor.set();
+		if (!isDad)
+			add(bfAnimsLOL);
+
+		hideLOL = new FlxText(FlxG.width / 2, 35, 0, "press H / B to show frame height / width", 12);
+		hideLOL.color = FlxColor.BLUE;
+		hideLOL.scrollFactor.set();
+		if (!isDad)
+			hideLOL.x += 10;
+		add(hideLOL);
+
+		moveBarLOL = new FlxText(FlxG.width / 2, 50, 0, "hold V + left mouse button to move the position bar", 12);
+		moveBarLOL.color = FlxColor.BLUE;
+		moveBarLOL.scrollFactor.set();
+		if (!isDad)
+			moveBarLOL.x += 10;
+		add(moveBarLOL);
+
+		backspace = new FlxSprite(FlxG.width - 350, 100);
+		backspace.frames = Paths.getSparrowAtlas('backspace');
+		backspace.animation.addByPrefix('blue', 'backspace PRESSED', 24);
+		add(backspace);
+
+		dummy = new FlxSprite(FlxG.width / 2, FlxG.height / 2).makeGraphic(500, 10, FlxColor.BLACK);
+		dummy.alpha = 0.6;
+		add(dummy);
+
+		newDummy = new FlxSprite(char.x, char.y).makeGraphic(char.frameWidth, char.frameHeight, FlxColor.BLACK);
+		newDummy.alpha = 0.3;
+		newDummy.visible = false;
+		add(newDummy);
 
 		super.create();
 	}
@@ -118,35 +173,65 @@ class AnimationDebug extends FlxState
 		if (FlxG.keys.justPressed.Q)
 			FlxG.camera.zoom -= 0.25;
 
-		if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L)
-		{
-			if (FlxG.keys.pressed.I)
-				camFollow.velocity.y = -90;
-			else if (FlxG.keys.pressed.K)
-				camFollow.velocity.y = 90;
-			else
-				camFollow.velocity.y = 0;
+		camFollow.velocity.set();
 
-			if (FlxG.keys.pressed.J)
-				camFollow.velocity.x = -90;
-			else if (FlxG.keys.pressed.L)
-				camFollow.velocity.x = 90;
-			else
-				camFollow.velocity.x = 0;
-		}
-		else
-		{
-			camFollow.velocity.set();
-		}
-
-		if (FlxG.keys.justPressed.W)
+		if (FlxG.keys.justPressed.N)
 		{
 			curAnim -= 1;
 		}
 
-		if (FlxG.keys.justPressed.S)
+		if (FlxG.keys.justPressed.M)
 		{
 			curAnim += 1;
+		}
+
+
+		if (FlxG.keys.justPressed.H)
+		{
+			dummy.visible = false;
+			newDummy.visible = true;
+		}
+		else if (FlxG.keys.justPressed.B)
+		{
+			dummy.visible = true;
+			newDummy.visible = false;
+		}
+
+		if (isDad)
+		{
+			if (FlxG.keys.justPressed.W)
+				dad.playAnim('singUP');
+			else if (FlxG.keys.justPressed.S)
+				dad.playAnim('singDOWN');
+			else if (FlxG.keys.justPressed.A)
+				dad.playAnim('singLEFT');
+			else if (FlxG.keys.justPressed.D)
+				dad.playAnim('singRIGHT');
+		}
+		else if (!isDad)
+		{
+			if (FlxG.keys.justPressed.W)
+				bf.playAnim('singUP');
+			else if (FlxG.keys.justPressed.S)
+				bf.playAnim('singDOWN');
+			else if (FlxG.keys.justPressed.A)
+				bf.playAnim('singLEFT');
+			else if (FlxG.keys.justPressed.D)
+				bf.playAnim('singRIGHT');
+			else if (FlxG.keys.justPressed.I)
+				bf.playAnim('singUPmiss');
+			else if (FlxG.keys.justPressed.K)
+				bf.playAnim('singDOWNmiss');
+			else if (FlxG.keys.justPressed.J)
+				bf.playAnim('singLEFTmiss');
+			else if (FlxG.keys.justPressed.L)
+				bf.playAnim('singRIGHTmiss');
+		} // wsad for normal note anim's, ikjl for miss animations, that's why its only for bf XD
+
+		if (FlxG.mouse.justPressed && FlxG.keys.justPressed.V || FlxG.mouse.pressed && FlxG.keys.pressed.V)
+		{
+			dummy.x = FlxG.mouse.x - 150;
+			dummy.y = FlxG.mouse.y;
 		}
 
 		if (curAnim < 0)
@@ -155,12 +240,29 @@ class AnimationDebug extends FlxState
 		if (curAnim >= animList.length)
 			curAnim = 0;
 
-		if (FlxG.keys.justPressed.S || FlxG.keys.justPressed.W || FlxG.keys.justPressed.SPACE)
+		if (FlxG.keys.justPressed.M || FlxG.keys.justPressed.N || FlxG.keys.justPressed.SPACE)
 		{
 			char.playAnim(animList[curAnim]);
 
 			updateTexts();
 			genBoyOffsets(false);
+		}
+
+		if (FlxG.keys.justPressed.ESCAPE || FlxG.keys.justPressed.BACKSPACE)
+		{
+			var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
+			black.scrollFactor.set();
+			black.alpha = 0;
+			add(black);
+
+			new FlxTimer().start(0.05, function(tmr:FlxTimer)
+			{
+				black.alpha += 0.15;
+				if (black.alpha != 1)
+					tmr.reset();
+				else 
+					FlxG.switchState(new PlayState());
+			});
 		}
 
 		var upP = FlxG.keys.anyJustPressed([UP]);

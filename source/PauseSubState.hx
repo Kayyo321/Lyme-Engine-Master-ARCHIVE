@@ -23,6 +23,8 @@ class PauseSubState extends MusicBeatSubstate
 
 	var pauseMusic:FlxSound;
 
+	var canMove:Bool = true;
+
 	public function new(x:Float, y:Float)
 	{
 		super();
@@ -89,75 +91,89 @@ class PauseSubState extends MusicBeatSubstate
 		var downP = controls.DOWN_P;
 		var accepted = controls.ACCEPT;
 
-		if (upP)
+		if (canMove)
 		{
-			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
+			if (upP)
+			{
+				changeSelection(-1);
+			}
+			if (downP)
+			{
+				changeSelection(1);
+			}
 		}
 
 		if (accepted)
 		{
 			var daSelected:String = menuItems[curSelected];
-
-			switch (daSelected)
+			if (canMove)
 			{
-				case "Resume":
-						var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ready'));
-						ready.scrollFactor.set();
-						ready.updateHitbox();
-						ready.screenCenter();
+				switch (daSelected)
+				{
+					case "Resume":
+							var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image('ready'));
+							ready.scrollFactor.set();
+							ready.updateHitbox();
+							ready.screenCenter();
 
-						var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image('set'));
-						set.scrollFactor.set();
-						set.updateHitbox();
-						set.screenCenter();
+							var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image('set'));
+							set.scrollFactor.set();
+							set.updateHitbox();
+							set.screenCenter();
 
-						var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image('go'));
-						go.scrollFactor.set();
-						go.updateHitbox();
-						go.screenCenter();
+							var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image('go'));
+							go.scrollFactor.set();
+							go.updateHitbox();
+							go.screenCenter();
 
-						var startTimer:FlxTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
-						{
-							
-							FlxG.sound.play(Paths.sound('intro3'));
+							canMove = false;
 
 							var startTimer:FlxTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
 							{
-								add(ready);
-								FlxG.sound.play(Paths.sound('intro2'));
+								
+								FlxG.sound.play(Paths.sound('intro3'));
 
 								var startTimer:FlxTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
 								{
-									remove(ready);
-									add(set);
-
-									FlxG.sound.play(Paths.sound('intro1'));
+									add(ready);
+									FlxG.sound.play(Paths.sound('intro2'));
 
 									var startTimer:FlxTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
 									{
-										remove(set);
-										add(go);
-										FlxG.sound.play(Paths.sound('introGo'));
-										var startTimer:FlxTimer = new FlxTimer().start(0.05, function(tmr:FlxTimer)
+										remove(ready);
+										add(set);
+
+										FlxG.sound.play(Paths.sound('intro1'));
+
+										var startTimer:FlxTimer = new FlxTimer().start(0.3, function(tmr:FlxTimer)
 										{
-											remove(go);
-											close();
+											remove(set);
+											add(go);
+											FlxG.sound.play(Paths.sound('introGo'));
+											var startTimer:FlxTimer = new FlxTimer().start(0.1, function(tmr:FlxTimer)
+											{
+												remove(go);
+												close();
+											});
 										});
-									});
-								});	
+									});	
+								});
 							});
-						});
-				// im so sorry for so many timers DX
-				case "Restart Song":
-					FlxG.resetState();
-				// case "Skip Song":
-				// 	endSong();
-				case "Exit to menu":
-					FlxG.switchState(new MainMenuState());
+					// im so sorry for so many timers DX
+					case "Restart Song":
+						if (canMove)
+							FlxG.resetState();
+						else 
+							trace("can't reset state yet, you're unpausing!");
+					// case "Skip Song":
+					// 	endSong();
+					case "Exit to menu":
+						if (canMove)
+							FlxG.switchState(new MainMenuState());
+						else 
+							trace("can't go to menu, you're unpausing!");
+				}
+				// I triple check it cuz I rly don't wanna crash XD
 			}
 		}
 

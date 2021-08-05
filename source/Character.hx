@@ -152,10 +152,10 @@ class Character extends FlxSprite
 				addOffset('danceLeft');
 				addOffset('danceRight');
 
-				addOffset("singUP", -20, 26);
-				addOffset("singRIGHT", -130, -14);
-				addOffset("singLEFT", 130, -10);
-				addOffset("singDOWN", -50, -130);
+				addOffset("singUP", -20, 25);
+				addOffset("singRIGHT", -125, -13);
+				addOffset("singLEFT", 130, -15);
+				addOffset("singDOWN", -52, -139);
 
 				playAnim('danceRight');
 			case 'mom':
@@ -438,10 +438,10 @@ class Character extends FlxSprite
 				animation.addByPrefix('singDOWN', 'Angry Senpai DOWN NOTE', 24, false);
 
 				addOffset('idle');
-				addOffset("singUP", 5, 37);
+				addOffset("singUP", 23, 36);
 				addOffset("singRIGHT");
-				addOffset("singLEFT", 40);
-				addOffset("singDOWN", 14);
+				addOffset("singLEFT", 24, 6);
+				addOffset("singDOWN", 6, 6);
 				playAnim('idle');
 
 				setGraphicSize(Std.int(width * 6));

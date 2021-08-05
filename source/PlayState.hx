@@ -56,6 +56,7 @@ class PlayState extends MusicBeatState
 	var halloweenLevel:Bool = false;
 
 	private var vocals:FlxSound;
+	private var dadVocals:FlxSound;
 
 	private var dad:Character;
 	private var gf:Character;
@@ -118,8 +119,8 @@ class PlayState extends MusicBeatState
 	var misses:FlxText;
 
 	var missesStuff:Int = 0;
-	var sTOPBITCH:FlxText;
-	var yourNotThatGuyBud:Int = 0;
+	var inputCounter:FlxText;
+	var inputCounterStuff:Int = 0;
 	var songTxt:FlxText;
 
 	public var mashViolation:Int = 0;
@@ -764,28 +765,28 @@ class PlayState extends MusicBeatState
 			black.y += 575;
 		add(black);
 
-		var sdfdk = new FlxSprite(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 15).loadGraphic(Paths.image('black'));
-		sdfdk.scrollFactor.set();
-		sdfdk.x = FlxG.width / 2 - 50;
+		var songBox = new FlxSprite(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 15).loadGraphic(Paths.image('black'));
+		songBox.scrollFactor.set();
+		songBox.x = FlxG.width / 2 - 50;
 		if (!FlxG.save.data.downscroll)
-			sdfdk.y += 15;
+			songBox.y += 15;
 		else 
-			sdfdk.y += 600;
-		add(sdfdk);
+			songBox.y += 600;
+		add(songBox);
 
-		var newBox = new FlxSprite(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 15).loadGraphic(Paths.image('black'));
-		newBox.scrollFactor.set();
+		var inputCounterBox = new FlxSprite(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 15).loadGraphic(Paths.image('black'));
+		inputCounterBox.scrollFactor.set();
 		// newBox.x -= 50;
 		if (!FlxG.save.data.downscroll)
-			newBox.y -= 795;
+			inputCounterBox.y -= 795;
 		else 
-			newBox.y -= 200;
+			inputCounterBox.y -= 200;
 		if (!FlxG.save.data.newInput)
-			newBox.x -= 60;
+			inputCounterBox.x -= 60;
 		else
-			newBox.x -= 50;
-		newBox.flipY = true;
-		add(newBox);
+			inputCounterBox.x -= 50;
+		inputCounterBox.flipY = true;
+		add(inputCounterBox);
 
 		songTxt = new FlxText(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 20, 0, "", 35);
 		songTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
@@ -813,34 +814,38 @@ class PlayState extends MusicBeatState
 			misses.y += 595;
 		add(misses);
 
-		sTOPBITCH = new FlxText(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 5, 0, "", 35);
-		sTOPBITCH.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
-		sTOPBITCH.scrollFactor.set();
-		sTOPBITCH.visible = true;
-		// sTOPBITCH.x -= 30;
-		if (!FlxG.save.data.downscroll)
-			sTOPBITCH.y -= 650;
-		else 
-			sTOPBITCH.y -= 55;
-		if (!FlxG.save.data.newInput)
-			sTOPBITCH.x -= 40;
-		else
-			sTOPBITCH.x -= 30;
-		add(sTOPBITCH);
+		inputCounter = new FlxText(inputCounterBox.x + 50, inputCounterBox.y + 50, 0, "", 35);
+		inputCounter.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
+		inputCounter.scrollFactor.set();
+		inputCounter.visible = true;
+		// if (!FlxG.save.data.downscroll)
+		// 	inputCounter.y -= 650;
+		// else 
+		// 	inputCounter.y -= 55;
+		// if (!FlxG.save.data.newInput)
+		// 	inputCounter.x -= 40;
+		// else
+		// 	inputCounter.x -= 30;
+		add(inputCounter);
+
+		// inputCounter = new FlxText(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 5, 0, "", 35);
+		// inputCounter.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT);
+		// inputCounter.scrollFactor.set();
+		// inputCounter.visible = true;
+		// if (!FlxG.save.data.downscroll)
+		// 	inputCounter.y -= 650;
+		// else 
+		// 	inputCounter.y -= 55;
+		// if (!FlxG.save.data.newInput)
+		// 	inputCounter.x -= 40;
+		// else
+		// 	inputCounter.x -= 30;
+		// add(inputCounter);
 
 		var context:FlxText = new FlxText(10, FlxG.height - 18, 0, "Friday Night Funkin' - Lyme Engine, Created by KDev", 50);
 		context.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		context.scrollFactor.set();
 		add(context);
-
-
-		if (yourNotThatGuyBud > 99) // listen, I know the meme is pal not bud. It's too late now and I'm lazy >:'(
-		{
-			sTOPBITCH.x -= 10;
-			sTOPBITCH.color = FlxColor.RED;
-		}
-
-		// why is the s unCapitalized in sTOPBITCH? lol idk, get mad ;P
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -859,18 +864,13 @@ class PlayState extends MusicBeatState
 		scoreTxt.cameras = [camHUD];
 		misses.cameras = [camHUD];
 		black.cameras = [camHUD];
-		newBox.cameras = [camHUD];
-		sdfdk.cameras = [camHUD];
+		songBox.cameras = [camHUD];
 		songTxt.cameras = [camHUD];
-		sTOPBITCH.cameras = [camHUD];
+		inputCounter.cameras = [camHUD];
+		inputCounterBox.cameras = [camHUD];
 		context.cameras = [camHUD];
 		doof.cameras = [camHUD];
 
-		// if (SONG.song == 'South')
-		// FlxG.camera.alpha = 0.7;
-		// UI_camera.zoom = 1;
-
-		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
 
 		if (isStoryMode)
@@ -1134,6 +1134,7 @@ class PlayState extends MusicBeatState
 			FlxG.sound.playMusic(Paths.inst(PlayState.SONG.song), 1, false);
 		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
+		dadVocals.play();
 
 		#if desktop
 		// Song duration in a float, useful for the time left feature
@@ -1156,11 +1157,15 @@ class PlayState extends MusicBeatState
 		curSong = songData.song;
 
 		if (SONG.needsVoices)
+		{
 			vocals = new FlxSound().loadEmbedded(Paths.voices(PlayState.SONG.song));
+			dadVocals = new FlxSound().loadEmbedded(Paths.dadvoices(PlayState.SONG.song));
+		}
 		else
 			vocals = new FlxSound();
 
 		FlxG.sound.list.add(vocals);
+		FlxG.sound.list.add(dadVocals);
 
 		notes = new FlxTypedGroup<Note>();
 		add(notes);
@@ -1360,6 +1365,7 @@ class PlayState extends MusicBeatState
 			if (FlxG.sound.music != null)
 			{
 				FlxG.sound.music.pause();
+				dadVocals.pause();
 				vocals.pause();
 			}
 
@@ -1432,11 +1438,17 @@ class PlayState extends MusicBeatState
 	function resyncVocals():Void
 	{
 		vocals.pause();
+		dadVocals.pause();
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
 		vocals.time = Conductor.songPosition;
 		vocals.play();
+
+		FlxG.sound.music.play();
+		Conductor.songPosition = FlxG.sound.music.time;
+		dadVocals.time = Conductor.songPosition;
+		dadVocals.play();
 	}
 
 	private var paused:Bool = false;
@@ -1481,17 +1493,14 @@ class PlayState extends MusicBeatState
 		scoreTxt.text = "Score: " + songScore;
 		misses.text = "Faults: " + missesStuff;
 		if (!FlxG.save.data.newInput)
-			sTOPBITCH.text = "Harsh Inputs Are On";
+			inputCounter.text = "Harsh Inputs Are On";
 		else
-			sTOPBITCH.text = "Ghost taps: " + yourNotThatGuyBud;
+			inputCounter.text = "Ghost taps: " + inputCounterStuff;
 
 		if (SONG.song.toLowerCase() == 'pico' && storyDifficulty == 2)
 			songTxt.text = "Song: " + SONG.song + " is " + diff + " 0_o";
 		else 
 			songTxt.text = "Song: " + SONG.song + " - " + diff;
-
-		// if (SONG.song.length >= 15)
-		// 	songTxt.x = FlxG.width - 5;
 
 		if (storyDifficulty == 0)
 		{
@@ -1533,6 +1542,8 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.switchState(new ChartingState());
 
+			dadVocals.pause();
+
 			#if desktop
 			DiscordClient.changePresence("Chart Editor", null, null, true);
 			#end
@@ -1571,6 +1582,8 @@ class PlayState extends MusicBeatState
 		#if debug
 		if (FlxG.keys.justPressed.EIGHT)
 			FlxG.switchState(new AnimationDebug(SONG.player2));
+		else if (FlxG.keys.justPressed.SIX)
+			FlxG.switchState(new AnimationDebug(SONG.player1));
 		#end
 
 		if (startingSong)
@@ -1726,6 +1739,7 @@ class PlayState extends MusicBeatState
 			paused = true;
 
 			vocals.stop();
+			dadVocals.stop();
 			FlxG.sound.music.stop();
 
 			openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
@@ -1853,7 +1867,10 @@ class PlayState extends MusicBeatState
 					dad.holdTimer = 0;
 
 					if (SONG.needsVoices)
+					{
 						vocals.volume = 1;
+						dadVocals.volume = 1;
+					}
 
 					daNote.kill();
 					notes.remove(daNote, true);
@@ -1924,11 +1941,10 @@ class PlayState extends MusicBeatState
 			endSong();
 		#end
 
-		if (missesStuff >= 15)
-			sTOPBITCH.visible = true;
-
 		if (missesStuff >= 25)
-			sTOPBITCH.text = "You're missing a lot!";
+			misses.color = FlxColor.ORANGE;
+		else if (missesStuff >= 50)
+			misses.color = FlxColor.RED;
 	}
 
 	public function endSong():Void
@@ -1936,6 +1952,7 @@ class PlayState extends MusicBeatState
 		canPause = false;
 		FlxG.sound.music.volume = 0;
 		vocals.volume = 0;
+		dadVocals.volume = 0;
 		if (SONG.validScore)
 		{
 			#if !switch
@@ -2007,6 +2024,7 @@ class PlayState extends MusicBeatState
 		else
 		{
 			trace('WENT BACK TO FREEPLAY??');
+			dadVocals.pause();
 			FlxG.switchState(new FreeplayState());
 		}
 	}
@@ -2018,6 +2036,7 @@ class PlayState extends MusicBeatState
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 		// boyfriend.playAnim('hey');
 		vocals.volume = 1;
+		dadVocals.volume = 1;
 
 		var placement:String = Std.string(combo);
 
@@ -2371,7 +2390,7 @@ class PlayState extends MusicBeatState
 		{
 			// placeholder XD
 
-			yourNotThatGuyBud++;
+			inputCounterStuff++;
 
 			if (!FlxG.save.data.newInput)
 			{
