@@ -137,18 +137,11 @@ class KeyBindMenu extends FlxSubState
                     FlxG.sound.play(Paths.sound('scrollMenu'));
                     state = "input";
                 }
-                else if(FlxG.keys.justPressed.ESCAPE || FlxG.keys.justPressed.BACKSPACE){
+                else if(FlxG.keys.justPressed.ESCAPE){
                     quit();
                 }
-				else if (FlxG.keys.justPressed.R){
-                    infoText.text = "Are you sure you wanna reset your keybinds?";
-                    infoText.color = FlxColor.RED;
-                    if (FlxG.keys.justPressed.R)
-                    {
-                        reset();
-                        infoText.text = "Escape + Backspace to leave with saving, Press R to reset KeyBinds";
-                        infoText.color = FlxColor.WHITE;
-                    }
+				else if (FlxG.keys.justPressed.BACKSPACE){
+                    reset();
                 }
 
             case "input":

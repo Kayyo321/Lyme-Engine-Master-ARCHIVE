@@ -31,6 +31,8 @@ class AnimationDebug extends FlxState
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
 
+	var dummyChar:FlxSprite;
+
 	var backspace:FlxSprite;
 	var hideInstructionsLOL:FlxText;
 	var moveBarLOL:FlxText;
@@ -48,7 +50,7 @@ class AnimationDebug extends FlxState
 	{
 		FlxG.sound.music.stop();
 
-		var gridBG:FlxSprite = FlxGridOverlay.create(10, 10);
+		var gridBG:FlxSprite = FlxGridOverlay.create(20, 20);
 		gridBG.scrollFactor.set(0.5, 0.5);
 		add(gridBG);
 
@@ -113,7 +115,7 @@ class AnimationDebug extends FlxState
 			hideLOL.x += 10;
 		add(hideLOL);
 
-		moveBarLOL = new FlxText(FlxG.width / 2, 50, 0, "hold V + left mouse button to move the position bar", 12);
+		moveBarLOL = new FlxText(FlxG.width / 2, 50, 0, "hold left mouse button to move the position bar", 12);
 		moveBarLOL.color = FlxColor.BLUE;
 		moveBarLOL.scrollFactor.set();
 		if (!isDad)
@@ -228,7 +230,7 @@ class AnimationDebug extends FlxState
 				bf.playAnim('singRIGHTmiss');
 		} // wsad for normal note anim's, ikjl for miss animations, that's why its only for bf XD
 
-		if (FlxG.mouse.justPressed && FlxG.keys.justPressed.V || FlxG.mouse.pressed && FlxG.keys.pressed.V)
+		if (FlxG.mouse.justPressed || FlxG.mouse.pressed)
 		{
 			dummy.x = FlxG.mouse.x - 150;
 			dummy.y = FlxG.mouse.y;

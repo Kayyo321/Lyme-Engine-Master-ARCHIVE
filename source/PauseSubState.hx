@@ -18,10 +18,12 @@ class PauseSubState extends MusicBeatSubstate
 {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
 
-	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Exit to menu'];
+	var menuItems:Array<String> = ['Resume', 'Restart Song', 'Charting State', 'Exit to menu'];
 	var curSelected:Int = 0;
 
 	var pauseMusic:FlxSound;
+
+	var diff:String = "";
 
 	var canMove:Bool = true;
 
@@ -39,6 +41,8 @@ class PauseSubState extends MusicBeatSubstate
 		bg.alpha = 0;
 		bg.scrollFactor.set();
 		add(bg);
+
+		// menuItems.alpha = 0;
 
 		var levelInfo:FlxText = new FlxText(20, 15, 0, "", 32);
 		levelInfo.text += PlayState.SONG.song;
@@ -84,6 +88,13 @@ class PauseSubState extends MusicBeatSubstate
 	{
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
+
+		if (PlayState.storyDifficulty == 0)
+			diff = "Easy";
+		else if (PlayState.storyDifficulty == 1)
+			diff = "Normal";
+		else if (PlayState.storyDifficulty == 2)
+			diff = "Hard";
 
 		super.update(elapsed);
 
@@ -165,13 +176,14 @@ class PauseSubState extends MusicBeatSubstate
 							FlxG.resetState();
 						else 
 							trace("can't reset state yet, you're unpausing!");
-					// case "Skip Song":
-					// 	endSong();
+					case "Charting State":
+						if (canMove) 
+							FlxG.switchState(new ChartingState());
 					case "Exit to menu":
 						if (canMove)
 							FlxG.switchState(new MainMenuState());
 						else 
-							trace("can't go to menu, you're unpausing!");
+							trace("can't go to menu, you're unpausing!");	
 				}
 				// I triple check it cuz I rly don't wanna crash XD
 			}

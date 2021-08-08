@@ -1,6 +1,9 @@
 package;
 
-import Controls.KeyboardScheme;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import openfl.Lib;
+import Options;
 import Controls.Control;
 import flash.text.TextField;
 import flixel.FlxG;
@@ -15,32 +18,38 @@ import lime.utils.Assets;
 
 class OptionsMenu extends MusicBeatState
 {
+	public static var instance:OptionsMenu;
+
 	var selector:FlxText;
 	var curSelected:Int = 0;
 
-	var controlsStrings:Array<String> = [];
-	var uiStrings:Array<String> = [];
+	var options:Array<OptionCategory> = [
+		new OptionCategory("Gameplay", [
+			new DFJKOption(controls),
+			new DownscrollOption("change position of strum line"),
+			new GhostTapOption("Cleaner Inputs: ghost tapping, better timing window, Harsher inputs: no ghost tapping, harsher timing window")
+		]),
+		new OptionCategory("Visual", [
+			new Counters("See the counters in game?"),
+			new NoteEffects("Show note effects at begining of song"),
+			new SusNoteEffects("Show sustain note effects on a sustain note")
+		])
+	];
 
+	public var acceptInput:Bool = true;
+
+	private var currentDescription:String = "";
 	private var grpControls:FlxTypedGroup<Alphabet>;
-	var versionShit:FlxText;
+	public static var versionShit:FlxText;
+
+	var currentSelectedCat:OptionCategory;
+	var blackBorder:FlxSprite;
 	override function create()
 	{
-		if (FlxG.save.data.newInput == null)
-			FlxG.save.data.newInput = true;
+		instance = this;
+		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuDesat"));
 
-		if (FlxG.save.data.downscroll == null)
-			FlxG.save.data.downscroll = false;
-
-		if (FlxG.save.data.dfjk == null)
-			FlxG.save.data.dfjk = false;
-
-		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		controlsStrings = CoolUtil.coolStringFile((FlxG.save.data.dfjk ? 'KeyBinds' : 'KeyBinds') + "\n" + (FlxG.save.data.newInput ? "Cleaner Inputs" : "Harsher Inputs") + "\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'));
-		// uiStrings = CoolUtil.coolStringFile((FlxG.save.data.dfjk ? 'DFJK' : 'WASD') + "\n" + (FlxG.save.data.newInput ? "New input" : "Old Input") + "\n" + (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'));
-
-		trace(controlsStrings);
-
-		menuBG.color = 0xFFea71fd;
+		menuBG.color = 0xFfaE82Df; //0xFFea71fd
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
@@ -50,75 +59,169 @@ class OptionsMenu extends MusicBeatState
 		grpControls = new FlxTypedGroup<Alphabet>();
 		add(grpControls);
 
-		for (i in 0...controlsStrings.length)
+		for (i in 0...options.length)
 		{
-				var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
-				controlLabel.isMenuItem = true;
-				controlLabel.targetY = i;
-				grpControls.add(controlLabel);
+			var controlLabel:Alphabet = new Alphabet(0.5, (70 * i) + 30, options[i].getName(), true, false);
+			controlLabel.screenCenter(X);
+			controlLabel.isMenuItem = true;
+			controlLabel.targetY = i;
+			grpControls.add(controlLabel);
 			// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
 		}
 
+		// for (i in 0...controlsStrings.length)
+		// 	{
+		// 			var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, controlsStrings[i], true, false);
+		// 			controlLabel.isMenuItem = true;
+		// 			controlLabel.targetY = i;
+		// 			grpControls.add(controlLabel);
+		// 		// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+		// 	}
 
-		versionShit = new FlxText(5, FlxG.height - 18, 0, "Offset (Left, Right): " + FlxG.save.data.offset, 12);
+		// old one cuz i forget lel ^
+
+		currentDescription = "none";
+
+		versionShit = new FlxText(5, FlxG.height + 40, 0, "Current " + "Description - " + currentDescription, 12);
 		versionShit.scrollFactor.set();
 		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		
+		blackBorder = new FlxSprite(-30,FlxG.height + 40).makeGraphic((Std.int(versionShit.width + FlxG.width)),Std.int(versionShit.height + 600),FlxColor.BLACK);
+		blackBorder.alpha = 0.5;
+
+		add(blackBorder);
+
 		add(versionShit);
+
+		FlxTween.tween(versionShit,{y: FlxG.height - 18},2,{ease: FlxEase.elasticInOut});
+		FlxTween.tween(blackBorder,{y: FlxG.height - 18},2, {ease: FlxEase.elasticInOut});
 
 		super.create();
 	}
+
+	var isCat:Bool = false;
+	
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-			if (controls.BACK)
+		if (acceptInput)
+		{
+			if (controls.BACK && !isCat)
 				FlxG.switchState(new MainMenuState());
+			else if (controls.BACK)
+			{
+				isCat = false;
+				grpControls.clear();
+				for (i in 0...options.length)
+					{
+						var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, options[i].getName(), true, false);
+						controlLabel.screenCenter(X);
+						controlLabel.isMenuItem = true;
+						controlLabel.targetY = i;
+						grpControls.add(controlLabel);
+						// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+					}
+				curSelected = 0;
+			}
 			if (controls.UP_P)
 				changeSelection(-1);
 			if (controls.DOWN_P)
 				changeSelection(1);
 			
-			if (controls.RIGHT_R)
+			if (isCat)
 			{
-				FlxG.save.data.offset++;
-				versionShit.text = "Offset (Left, Right): " + FlxG.save.data.offset;
-			}
-
-			if (controls.LEFT_R)
+				
+				if (currentSelectedCat.getOptions()[curSelected].getAccept())
 				{
-					FlxG.save.data.offset--;
-					versionShit.text = "Offset (Left, Right): " + FlxG.save.data.offset;
+					if (FlxG.keys.pressed.SHIFT)
+						{
+							if (FlxG.keys.pressed.RIGHT)
+								currentSelectedCat.getOptions()[curSelected].right();
+							if (FlxG.keys.pressed.LEFT)
+								currentSelectedCat.getOptions()[curSelected].left();
+						}
+					else
+					{
+						if (FlxG.keys.justPressed.RIGHT)
+							currentSelectedCat.getOptions()[curSelected].right();
+						if (FlxG.keys.justPressed.LEFT)
+							currentSelectedCat.getOptions()[curSelected].left();
+					}
 				}
-	
+				else
+				{
+
+					if (FlxG.keys.pressed.SHIFT)
+					{
+						if (FlxG.keys.justPressed.RIGHT)
+							FlxG.save.data.offset += 0.1;
+						else if (FlxG.keys.justPressed.LEFT)
+							FlxG.save.data.offset -= 0.1;
+					}
+					else if (FlxG.keys.pressed.RIGHT)
+						FlxG.save.data.offset += 0.1;
+					else if (FlxG.keys.pressed.LEFT)
+						FlxG.save.data.offset -= 0.1;
+					
+				
+				}
+				if (currentSelectedCat.getOptions()[curSelected].getAccept())
+					versionShit.text =  currentSelectedCat.getOptions()[curSelected].getValue() + " - Description - " + currentDescription;
+				else
+					versionShit.text = "Current" + " Description - " + currentDescription;
+			}
+			else
+			{
+				if (FlxG.keys.pressed.SHIFT)
+					{
+						if (FlxG.keys.justPressed.RIGHT)
+							FlxG.save.data.offset += 0.1;
+						else if (FlxG.keys.justPressed.LEFT)
+							FlxG.save.data.offset -= 0.1;
+					}
+					else if (FlxG.keys.pressed.RIGHT)
+						FlxG.save.data.offset += 0.1;
+					else if (FlxG.keys.pressed.LEFT)
+						FlxG.save.data.offset -= 0.1;
+			}
+		
+
+			if (controls.RESET)
+					FlxG.save.data.offset = 0;
 
 			if (controls.ACCEPT)
 			{
-				if (curSelected != 3)
-					grpControls.remove(grpControls.members[curSelected]);
-				switch(curSelected)
+				if (isCat)
 				{
-					case 0:
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.dfjk ? 'KeyBinds' : 'KeyBinds'), true, false);
+					if (currentSelectedCat.getOptions()[curSelected].press()) {
+						grpControls.remove(grpControls.members[curSelected]);
+						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, currentSelectedCat.getOptions()[curSelected].getDisplay(), true, false);
 						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected;
+						ctrl.screenCenter(X);
 						grpControls.add(ctrl);
-						if (controls.ACCEPT)
-							FlxG.switchState(new KeyBindMenu());	
-					case 1:
-						FlxG.save.data.newInput = !FlxG.save.data.newInput;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.newInput ? "Cleaner Inputs" : "Harsher Inputs"), true, false);
-						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 1;
-						grpControls.add(ctrl);
-					case 2:
-						FlxG.save.data.downscroll = !FlxG.save.data.downscroll;
-						var ctrl:Alphabet = new Alphabet(0, (70 * curSelected) + 30, (FlxG.save.data.downscroll ? 'Downscroll' : 'Upscroll'), true, false);
-						ctrl.isMenuItem = true;
-						ctrl.targetY = curSelected - 2;
-						grpControls.add(ctrl);
+					}
+				}
+				else
+				{
+					currentSelectedCat = options[curSelected];
+					isCat = true;
+					grpControls.clear();
+					for (i in 0...currentSelectedCat.getOptions().length)
+						{
+							var controlLabel:Alphabet = new Alphabet(0, (70 * i) + 30, currentSelectedCat.getOptions()[i].getDisplay(), true, false);
+							controlLabel.isMenuItem = true;
+							controlLabel.screenCenter(X);
+							controlLabel.targetY = i;
+							grpControls.add(controlLabel);
+							// DONT PUT X IN THE FIRST PARAMETER OF new ALPHABET() !!
+						}
+					curSelected = 0;
 				}
 			}
+		}
+		FlxG.save.flush();
 	}
 
 	var isSettingControl:Bool = false;
@@ -126,10 +229,10 @@ class OptionsMenu extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 		#if !switch
-		// NGio.logEvent('Fresh');
+		// NGio.logEvent("Fresh");
 		#end
 		
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		FlxG.sound.play(Paths.sound("scrollMenu"), 0.4);
 
 		curSelected += change;
 
@@ -138,6 +241,19 @@ class OptionsMenu extends MusicBeatState
 		if (curSelected >= grpControls.length)
 			curSelected = 0;
 
+		if (isCat)
+			currentDescription = currentSelectedCat.getOptions()[curSelected].getDescription();
+		else
+			currentDescription = "Please select a category";
+		if (isCat)
+		{
+			if (currentSelectedCat.getOptions()[curSelected].getAccept())
+				versionShit.text =  currentSelectedCat.getOptions()[curSelected].getValue() + " - Description - " + currentDescription;
+			else
+				versionShit.text = "Current" + " Description - " + currentDescription;
+		}
+		else
+			versionShit.text = "Current" + " Description - " + currentDescription;
 		// selector.y = (70 * curSelected) + 30;
 
 		var bullShit:Int = 0;

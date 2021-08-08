@@ -24,6 +24,8 @@ class MainMenuState extends MusicBeatState
 {
 	var curSelected:Int = 0;
 
+	var curTween:FlxTween;
+
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	var menuItem:FlxSprite;
 
@@ -200,27 +202,6 @@ class MainMenuState extends MusicBeatState
 		}
 		
 		super.update(elapsed);
-
-		menuItems.forEach(function(spr:FlxSprite)
-		{
-			if (FlxG.keys.pressed.H)
-			{
-				spr.x--;
-			}
-			else if (FlxG.keys.pressed.J)
-			{
-				spr.x++;
-			}
-
-			if (FlxG.keys.pressed.K)
-			{
-				spr.y--;
-			}
-			else if (FlxG.keys.pressed.L)
-			{
-				spr.y++;
-			}
-		});
 	}
 
 	function changeItem(huh:Int = 0)
@@ -234,17 +215,14 @@ class MainMenuState extends MusicBeatState
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{
+
 			spr.animation.play('idle');
 
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
-				spr.x = FlxG.width / 2 - 475;
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
-			}
-			else
-			{
-				spr.x = 120;
+				//curTween = FlxTween.tween(spr, {x: spr.x + 50}, 1, {ease: FlxEase.circOut, type: PINGPONG});
 			}
 			spr.updateHitbox();
 		});
