@@ -48,6 +48,10 @@ Downscroll moves the note scroll down, Upscroll moves the note scroll up
 
 the are several counters, which include: Faults, Score, Ghost Taps (if on cleaner inputs), and song info (go into pico on hard mode for an easter egg ;) )
 
+## how to see recent updates
+
+go to the game banana page [here](https://gamebanana.com/mods/312257) and look at the updates tab, to see all the new updates! (1.3.0 has middle scroll and some other rly cool stuff you'll like with it :D)
+
 ## Build instructions
 
 THESE INSTRUCTIONS ARE FOR COMPILING THE GAME'S SOURCE CODE!!!
