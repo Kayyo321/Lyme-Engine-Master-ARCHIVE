@@ -1,8 +1,10 @@
 package;
 
-/// Code created by Rozebud for FPS Plus (thanks rozebud)
+// Code created by Rozebud for FPS Plus (thanks rozebud)
 // modified by KadeDev for use in Kade Engine/Tricky
+// modified by Kayyo for use in Lyme engine ;)
 
+import flixel.util.FlxTimer;
 import flixel.util.FlxAxes;
 import flixel.FlxSubState;
 import flixel.input.FlxInput;
@@ -72,14 +74,12 @@ class KeyBindMenu extends FlxSubState
 		keyTextDisplay.borderSize = 2;
 		keyTextDisplay.borderQuality = 3;
 
-        blackBox = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
-        add(blackBox);
-
-        bro = new FlxSprite(0,0).loadGraphic(Paths.image('menuBGMagenta', 'preload'));
+        bro = new FlxSprite(0,0).loadGraphic(Paths.image('menuDesat', 'preload'));
+        bro.color = 0xdF7F81Bb;
         bro.alpha -= 0.5;
         add(bro);
 
-        infoText = new FlxText(-10, 580, 1280, "Escape + Backspace to leave with saving, Press R to reset KeyBinds", 72);
+        infoText = new FlxText(-10, 580, 1280, "Escape to leave with saving, BackSpace to reset KeyBinds", 72);
 		infoText.scrollFactor.set(0, 0);
 		infoText.setFormat("VCR OSD Mono", 24, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		infoText.borderSize = 2;
@@ -98,13 +98,18 @@ class KeyBindMenu extends FlxSubState
         kindaCringBro.screenCenter(X);
         add(kindaCringBro);
 
-        blackBox.alpha = 0;
+        blackBox = new FlxSprite(0,0).makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);
+        add(blackBox);
+        
         keyTextDisplay.alpha = 0;
+        kindaCringBro.alpha = 0;
+        infoText.alpha = 0;
+        blackBox.alpha = 1;
 
         FlxTween.tween(keyTextDisplay, {alpha: 1}, 1, {ease: FlxEase.expoInOut});
         FlxTween.tween(infoText, {alpha: 1}, 1.4, {ease: FlxEase.expoInOut});
         FlxTween.tween(kindaCringBro, {alpha: 1}, 1.4, {ease: FlxEase.expoInOut});
-        FlxTween.tween(blackBox, {alpha: 0.7}, 1, {ease: FlxEase.expoInOut});
+        FlxTween.tween(blackBox, {alpha: 0}, 1, {ease: FlxEase.expoInOut});
 
         // OptionsMenu.instance.acceptInput = false;
 
@@ -138,7 +143,10 @@ class KeyBindMenu extends FlxSubState
                     state = "input";
                 }
                 else if(FlxG.keys.justPressed.ESCAPE){
-                    quit();
+                    var quit:FlxTimer = new FlxTimer().start(0.8, function (tmr:FlxTimer)
+                    {
+                       quit();  
+                    });
                 }
 				else if (FlxG.keys.justPressed.BACKSPACE){
                     reset();

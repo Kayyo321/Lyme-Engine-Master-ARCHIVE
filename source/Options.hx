@@ -72,8 +72,6 @@ class Option
 	public function right():Bool { return throw "stub!"; }
 }
 
-
-
 class DFJKOption extends Option
 {
 	private var controls:Controls;
@@ -180,7 +178,7 @@ class NoteEffects extends Option
 	}
 }
 
-class SusNoteEffects extends Option
+class MiddleScroll extends Option
 {
 	public function new(desc:String)
 	{
@@ -190,13 +188,233 @@ class SusNoteEffects extends Option
 
 	public override function press():Bool
 	{
-		FlxG.save.data.dontShowSusNoteEffect = !FlxG.save.data.dontShowSusNoteEffect;
+		FlxG.save.data.middleScroll = !FlxG.save.data.middleScroll;
 		display = updateDisplay();
 		return true;
 	}
 
 	private override function updateDisplay():String
 	{
-		return FlxG.save.data.dontShowSusNoteEffect ? "Sustain Note Effect Off" : "Sustain Note Effect On";
+		return FlxG.save.data.middleScroll ? "Middle Scroll On" : "Middle Scroll Off";
+	}
+}
+
+class MiddleScrollBox extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+		acceptValues = true;
+	}
+
+	public override function press():Bool
+	{
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Middle Scroll Box Alpha: ";
+	}
+	
+	override function right():Bool {
+		if (FlxG.save.data.middleScrollBox >= 1)
+		{
+			FlxG.save.data.middleScrollBox = 0;
+		}
+		else
+			FlxG.save.data.middleScrollBox = FlxG.save.data.middleScrollBox + 0.1;
+
+		return true;
+	}
+
+	override function left():Bool {
+		if (FlxG.save.data.middleScrollBox > 1)
+			FlxG.save.data.middleScrollBox = 0;
+		else if (FlxG.save.data.middleScrollBox < 0) // && FlxG.save.data.middleScrollBox != -1
+			FlxG.save.data.middleScrollBox = 1;
+		else
+			FlxG.save.data.middleScrollBox = FlxG.save.data.middleScrollBox - 0.1;
+		return true;
+	}
+
+	override function getValue():String
+	{
+		return "Middle Scroll Box Alpha: " + FlxG.save.data.middleScrollBox;
+	}
+}
+
+class FPSCapOption extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+		acceptValues = true;
+	}
+
+	public override function press():Bool
+	{
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "FPS Cap";
+	}
+	
+	override function right():Bool {
+		if (FlxG.save.data.fpsCap >= 290)
+		{
+			FlxG.save.data.fpsCap = 290;
+			(cast (Lib.current.getChildAt(0), Main)).setFPSCap(290);
+		}
+		else
+			FlxG.save.data.fpsCap = FlxG.save.data.fpsCap + 10;
+		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+
+		return true;
+	}
+
+	override function left():Bool {
+		if (FlxG.save.data.fpsCap > 290)
+			FlxG.save.data.fpsCap = 290;
+		else if (FlxG.save.data.fpsCap < 60)
+			FlxG.save.data.fpsCap = Application.current.window.displayMode.refreshRate;
+		else
+			FlxG.save.data.fpsCap = FlxG.save.data.fpsCap - 10;
+		(cast (Lib.current.getChildAt(0), Main)).setFPSCap(FlxG.save.data.fpsCap);
+		return true;
+	}
+
+	override function getValue():String
+	{
+		return "Current FPS Cap: " + FlxG.save.data.fpsCap + 
+		(FlxG.save.data.fpsCap == Application.current.window.displayMode.refreshRate ? "Hz (Refresh Rate)" : "");
+	}
+}
+
+class Hitsound extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.playHitsound = !FlxG.save.data.playHitsound;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.playHitsound ? "Play Hitsound Upon Tap" : "Dont Play Hitsound";
+	}
+}
+
+class GoToGit extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.openURL('https://github.com/Kayyo321/Lyme-Engine-Master');
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "github repository";
+	}
+}
+
+class GoToBanana extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.openURL('https://gamebanana.com/mods/312257');
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "game banana page";
+	}
+}
+
+class BlueNotes extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.blueNote = !FlxG.save.data.blueNote;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.blueNote ? "Notes Dark Theme" : "Notes Default Theme";
+	}
+}
+
+class Icons extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.iconsOff = !FlxG.save.data.iconsOff;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.iconsOff ? "Health Icons Off" : "Health Icons On";
+	}
+}
+
+class Bar extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.healthBarOff = !FlxG.save.data.healthBarOff;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.healthBarOff ? "HealthBar Off" : "HealthBar On";
 	}
 }

@@ -179,6 +179,8 @@ class PauseSubState extends MusicBeatSubstate
 					case "Charting State":
 						if (canMove) 
 							FlxG.switchState(new ChartingState());
+						else 
+							trace("can't go to charting state yet, you're unpausing!");
 					case "Exit to menu":
 						if (canMove)
 							FlxG.switchState(new MainMenuState());

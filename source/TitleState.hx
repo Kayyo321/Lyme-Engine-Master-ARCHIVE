@@ -40,6 +40,8 @@ class TitleState extends MusicBeatState
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
 
+	var noInput:Bool = true;
+
 	var curWacky:Array<String> = [];
 
 	var wackyImage:FlxSprite;
@@ -238,9 +240,10 @@ class TitleState extends MusicBeatState
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
 
-		if (FlxG.keys.justPressed.F)
-		{
-			FlxG.fullscreen = !FlxG.fullscreen;
+		if (FlxG.keys.justPressed.F && !noInput)
+		{	
+			if (FlxG.fullscreen)
+				FlxG.fullscreen = !FlxG.fullscreen;
 		}
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
@@ -268,7 +271,7 @@ class TitleState extends MusicBeatState
 			#end
 		}
 
-		if (pressedEnter && !transitioning && skippedIntro)
+		if (pressedEnter && !transitioning && skippedIntro && !noInput)
 		{
 			#if !switch
 			NGio.unlockMedal(60960);
@@ -311,7 +314,7 @@ class TitleState extends MusicBeatState
 			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 		}
 
-		if (pressedEnter && !skippedIntro)
+		if (pressedEnter && !skippedIntro && !noInput)
 		{
 			skipIntro();
 		}
@@ -367,6 +370,7 @@ class TitleState extends MusicBeatState
 		{
 			case 1:
 				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+				noInput = false;
 			// credTextShit.visible = true;
 			case 3:
 				addMoreText('present');

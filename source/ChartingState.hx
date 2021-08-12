@@ -1,5 +1,6 @@
 package;
 
+import io.newgrounds.objects.Medal.Difficulty;
 import Conductor.BPMChangeEvent;
 import Section.SwagSection;
 import Song.SwagSong;
@@ -80,6 +81,10 @@ class ChartingState extends MusicBeatState
 	var _song:SwagSong;
 
 	var dummyX:FlxUICheckBox;
+
+	var curDifficulty:Int = 1;
+	var currentDifficulty:String = "";
+	var curSelectedDiff:Int = 0;
 
 	var typingShit:FlxInputText;
 	
@@ -254,12 +259,29 @@ class ChartingState extends MusicBeatState
 		add(bpmText);
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		var diff:Array<String> = CoolUtil.coolTextFile(Paths.txt('difficultyList'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
 			_song.player1 = characters[Std.parseInt(character)];
 		});
 		player1DropDown.selectedLabel = _song.player1;
+
+		var difficultyDropDown = new FlxUIDropDownMenu(10, 350, FlxUIDropDownMenu.makeStrIdLabelArray(diff, true), function(diff:String)
+		{
+			switch (currentDifficulty)
+			{
+				case 'easy':
+					curSelectedDiff = 0;
+				case 'normal':
+					curSelectedDiff = 1;
+				case 'hard':
+					curSelectedDiff = 2;
+			}
+		});
+		difficultyDropDown.selectedLabel = currentDifficulty;
+
+		curSelectedDiff = curDifficulty;
 
 		var player2DropDown = new FlxUIDropDownMenu(140, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -688,6 +710,7 @@ class ChartingState extends MusicBeatState
 			lastSection = curSection;
 
 			PlayState.SONG = _song;
+			PlayState.storyDifficulty = curDifficulty;
 			FlxG.sound.music.stop();
 			dadVocals.stop();
 			vocals.stop();
@@ -1168,13 +1191,28 @@ class ChartingState extends MusicBeatState
 
 		var data:String = Json.stringify(json);
 
+		var realDiff:String = "";
+
+		switch (PlayState.storyDifficulty)
+		{
+			case 0: 
+				realDiff = "easy";
+			case 1:
+				realDiff = "";
+			case 2:
+				realDiff = "hard";
+		}
+
 		if ((data != null) && (data.length > 0))
 		{
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), _song.song.toLowerCase() + ".json");
+			if (realDiff.length > 0)
+				_file.save(data.trim(), _song.song.toLowerCase() + "-" + realDiff + ".json");
+			else
+				_file.save(data.trim(), _song.song.toLowerCase() + ".json");
 		}
 	}
 

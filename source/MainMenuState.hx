@@ -38,12 +38,17 @@ class MainMenuState extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
+	var settings:Controls;
+
 	var curDifficulty:Int = 1;
 
 	var pos:FlxText;
 
 	override function create()
 	{
+
+		resetKeys();
+
 		#if desktop
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
@@ -115,6 +120,15 @@ class MainMenuState extends MusicBeatState
 		changeItem();
 
 		super.create();
+	}
+
+	function resetKeys()
+	{
+
+		PlayerSettings.player1.controls.loadKeyBinds();
+
+		// the game forgets???
+		// idfk	
 	}
 
 	var selectedSomethin:Bool = false;
@@ -222,31 +236,8 @@ class MainMenuState extends MusicBeatState
 			{
 				spr.animation.play('selected');
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
-				//curTween = FlxTween.tween(spr, {x: spr.x + 50}, 1, {ease: FlxEase.circOut, type: PINGPONG});
 			}
 			spr.updateHitbox();
 		});
 	}
 }
-
-// if (FlxG.keys.pressed.H)
-// 	{
-// 		spr.x--;
-// 	}
-// 	else if (FlxG.keys.pressed.J)
-// 	{
-// 		spr.x++;
-// 	}
-
-// 	if (FlxG.keys.pressed.K)
-// 	{
-// 		spr.y--;
-// 	}
-// 	else if (FlxG.keys.pressed.L)
-// 	{
-// 		spr.y++;
-// 	}
-
-// 	trace(spr.x + " - " + spr.y);
-
-	// garbage position shiz, but it works :/
