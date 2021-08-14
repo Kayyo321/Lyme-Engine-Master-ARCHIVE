@@ -418,3 +418,70 @@ class Bar extends Option
 		return FlxG.save.data.healthBarOff ? "HealthBar Off" : "HealthBar On";
 	}
 }
+
+class CountersAlpha extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+		acceptValues = true;
+	}
+
+	public override function press():Bool
+	{
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Counters Transparancy ";
+	}
+	
+	override function right():Bool {
+		if (FlxG.save.data.countersAlpha > 1)
+		{
+			FlxG.save.data.countersAlpha = 1;
+		}
+		else
+			FlxG.save.data.countersAlpha = FlxG.save.data.countersAlpha + 0.1;
+
+		return true;
+	}
+
+	override function left():Bool {
+		if (FlxG.save.data.countersAlpha > 1)
+			FlxG.save.data.countersAlpha = 1;
+		else if (FlxG.save.data.countersAlpha < 0.3) 
+			FlxG.save.data.countersAlpha = 0.3;
+		else
+			FlxG.save.data.countersAlpha = FlxG.save.data.countersAlpha - 0.1;
+		return true;
+	}
+
+	override function getValue():String
+	{
+		return "Counters Transparancy " + FlxG.save.data.countersAlpha;
+	}
+}
+
+class BotPlay extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.bot = !FlxG.save.data.bot;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.bot ? "BotPlay On" : "BotPlay Off";
+	}
+}

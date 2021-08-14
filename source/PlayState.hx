@@ -182,6 +182,8 @@ class PlayState extends MusicBeatState
 		Saves.BlueNotes = FlxG.save.data.blueNote;
 		Saves.HealthIcons = FlxG.save.data.iconsOff;
 		Saves.HealthBar = FlxG.save.data.healthBarOff;
+		Saves.CountersAlpha = FlxG.save.data.countersAlpha;
+		Saves.BotPlay = FlxG.save.data.botPlay;
 
 		trace("loaded " + shitGotLoaded + " changable shits");
 
@@ -844,6 +846,8 @@ class PlayState extends MusicBeatState
 			black.y -= 35;
 		else 
 			black.y += 575;
+		if (Saves.CountersAlpha != 1)
+			black.alpha = Saves.CountersAlpha;
 		add(black);
 
 		var songBox = new FlxSprite(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 15).loadGraphic(Paths.image('black'));
@@ -853,6 +857,8 @@ class PlayState extends MusicBeatState
 			songBox.y += 15;
 		else 
 			songBox.y += 600;
+		if (Saves.CountersAlpha != 1)
+			songBox.alpha = Saves.CountersAlpha;
 		add(songBox);
 
 		var inputCounterBox = new FlxSprite(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 15).loadGraphic(Paths.image('black'));
@@ -885,6 +891,8 @@ class PlayState extends MusicBeatState
 			songTxt.y += 30;
 		else 
 			songTxt.y += 620;
+		if (Saves.CountersAlpha != 1)
+			songTxt.alpha = Saves.CountersAlpha;
 		add(songTxt);
 
 		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 35, 0, "", 35);
@@ -893,6 +901,8 @@ class PlayState extends MusicBeatState
 		scoreTxt.x += 8;
 		if (Saves.DownscrollOn)
 			scoreTxt.y += 600;
+		if (Saves.CountersAlpha != 1)
+			scoreTxt.alpha = Saves.CountersAlpha;
 		add(scoreTxt);
 
 		misses = new FlxText(healthBarBG.x + healthBarBG.width + 200, healthBarBG.y + 20, 0, "", 35);
@@ -901,6 +911,8 @@ class PlayState extends MusicBeatState
 		misses.x += 8;
 		if (Saves.DownscrollOn)
 			misses.y += 595;
+		if (Saves.CountersAlpha != 1)
+			misses.alpha = Saves.CountersAlpha;
 		add(misses);
 
 		var context:FlxText = new FlxText(10, FlxG.height - 18, 0, "Friday Night Funkin' - Lyme Engine, Created by KDev", 50);
@@ -1004,6 +1016,13 @@ class PlayState extends MusicBeatState
 		}
 
 		super.create();
+	}
+
+	function getMisses()
+	{
+		missesStuff++;
+		health -= 0.095;
+		vocals.volume = 0;	
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBox):Void
@@ -1411,11 +1430,20 @@ class PlayState extends MusicBeatState
 
 			if (!Saves.NoteEffect)
 			{
-				babyArrow.y -= 750;
 				babyArrow.alpha = 0;
-
-				FlxTween.tween(babyArrow, {y: babyArrow.y + 750}, 1.5, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+				
 				FlxTween.tween(babyArrow, {alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+
+				if (Saves.DownscrollOn)
+				{
+					babyArrow.y -= 750;
+					FlxTween.tween(babyArrow, {y: babyArrow.y + 750}, 1.5, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+				}
+				else
+				{
+					babyArrow.y += 750;
+					FlxTween.tween(babyArrow, {y: babyArrow.y - 750}, 1.5, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
+				}
 			}
 
 			babyArrow.ID = i;
@@ -2038,7 +2066,7 @@ class PlayState extends MusicBeatState
 				// WIP interpolation shit? Need to fix the pause issue
 				// daNote.y = (strumLine.y - (songTime - daNote.strumTime) * (0.45 * PlayState.SONG.speed));
 
-				if (daNote.y < -daNote.height && !Saves.DownscrollOn || daNote.y >= strumLine.y + 106 && Saves.DownscrollOn)
+				if (daNote.y < -daNote.height && !Saves.DownscrollOn && !Saves.BotPlay || daNote.y >= strumLine.y + 106 && Saves.DownscrollOn && !Saves.BotPlay)
 					{
 						if (daNote.isSustainNote && daNote.wasGoodHit)
 						{
@@ -2047,9 +2075,17 @@ class PlayState extends MusicBeatState
 						}
 						else
 						{
-							health -= 0.095;
-							vocals.volume = 0;
-							missesStuff++;
+							if (!daNote.isSustainNote && !Saves.BotPlay)
+								getMisses();
+							else if (Saves.BotPlay)
+							{
+								daNote.active = false;
+								daNote.visible = false;
+			
+								daNote.kill();
+								notes.remove(daNote, true);
+								daNote.destroy();	
+							}
 						}
 
 						if (!daNote.wasGoodHit && daNote.isSustainNote || !daNote.wasGoodHit && !daNote.isSustainNote)
@@ -2552,7 +2588,7 @@ class PlayState extends MusicBeatState
 			if (Saves.HitSound)
 				playSnap();
 
-			if (!Saves.CleanerInput)
+			if (!Saves.CleanerInput && !Saves.BotPlay)
 			{
 				// boyfriend.stunned = true;
 				health -= 0.057;

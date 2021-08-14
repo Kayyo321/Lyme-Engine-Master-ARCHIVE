@@ -18,4 +18,6 @@ class Saves
     public static var BlueNotes:Bool;
     public static var HealthIcons:Bool;
     public static var HealthBar:Bool;
+    public static var CountersAlpha:Float;
+    public static var BotPlay:Bool;
 }

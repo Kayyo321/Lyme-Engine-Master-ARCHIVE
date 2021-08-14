@@ -154,8 +154,6 @@ class TitleState extends MusicBeatState
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
-		// logoBl.screenCenter();
-		// logoBl.color = FlxColor.BLACK;
 
 		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
@@ -426,10 +424,20 @@ class TitleState extends MusicBeatState
 		if (!skippedIntro)
 		{
 			remove(ngSpr);
-
-			FlxG.camera.flash(FlxColor.WHITE, 4);
 			remove(credGroup);
-			skippedIntro = true;
+
+			logoBl.y -= 100;
+			gfDance.x += 100;
+
+			FlxTween.tween(logoBl, {y: logoBl.y + 100}, 0.75, {
+				onComplete: function(tween:FlxTween)
+				{
+					FlxG.camera.flash(FlxColor.WHITE, 4);
+					skippedIntro = true;
+				}
+			});
+
+			FlxTween.tween(gfDance, {x: gfDance.x - 100}, 0.75);
 		}
 	}
 }

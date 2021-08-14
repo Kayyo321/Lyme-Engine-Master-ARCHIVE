@@ -33,6 +33,7 @@ class OptionsMenu extends MusicBeatState
 		]),
 		new OptionCategory("Visual", [
 			new Counters("See the counters in game?"),
+			new CountersAlpha("Change the transparancy of the counters in game"),
 			new NoteEffects("Show note effects at begining of song"),
 			new MiddleScrollBox("change the transparancy of the black box on middle scroll! (0 = not there)"),
 			#if desktop
@@ -42,7 +43,8 @@ class OptionsMenu extends MusicBeatState
 		new OptionCategory("Other", [
 			new BlueNotes("make all scrolling notes darker"),
 			new Icons("show health icons on healthbar"),
-			new Bar("show health bar")
+			new Bar("show health bar"), 
+			// new BotPlay("have a bot play all your notes for you") fix dis when you got the mental stability XD
 		]),
 		new OptionCategory("Lyme Engine Links", [
 			new GoToGit("goes to lyme engine's github repository"),
