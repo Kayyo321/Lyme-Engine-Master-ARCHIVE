@@ -20,4 +20,6 @@ class Saves
     public static var HealthBar:Bool;
     public static var CountersAlpha:Float;
     public static var BotPlay:Bool;
+
+    // hi lol
 }
