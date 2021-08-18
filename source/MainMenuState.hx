@@ -22,6 +22,7 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
+
 	var curSelected:Int = 0;
 
 	var curTween:FlxTween;
@@ -46,6 +47,8 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+
+		Saves.Menu = FlxG.save.data.menu;
 
 		resetKeys();
 
@@ -88,6 +91,12 @@ class MainMenuState extends MusicBeatState
 		add(magenta);
 		// magenta.scrollFactor.set();
 
+		var black:FlxSprite = new FlxSprite(0, FlxG.height / 2 - 15).makeGraphic(FlxG.width * 2, 125, FlxColor.BLACK);
+		black.scrollFactor.set();
+		black.alpha -= 0.35;
+		if (Saves.Menu)
+			add(black);	
+
 		menuItems = new FlxTypedGroup<FlxSprite>();
 		add(menuItems);
 
@@ -95,17 +104,43 @@ class MainMenuState extends MusicBeatState
 
 		for (i in 0...optionShit.length)
 		{
-			menuItem = new FlxSprite(120, 150 + (i * 160));
-			menuItem.frames = tex;
-			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
-			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
-			menuItem.animation.play('idle');
-			menuItem.ID = i;
-			// menuItem.x = 107;
-			// menuItem.y = 446;
-			menuItems.add(menuItem);
-			menuItem.scrollFactor.set();
-			menuItem.antialiasing = true;
+			if (!Saves.Menu)
+			{
+				menuItem = new FlxSprite(120, 150 + (i * 160));
+				menuItem.frames = tex;
+				menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
+				menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+				menuItem.animation.play('idle');
+				menuItem.ID = i;
+				menuItems.add(menuItem);
+				menuItem.scrollFactor.set();
+				menuItem.antialiasing = true;
+			}
+			else 
+			{
+				bg.y -= 25;
+				magenta.y -= 25;
+				
+				var menuItem:FlxSprite = new FlxSprite(0, 0);
+				menuItem.frames = tex;
+				menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
+				menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
+				menuItem.animation.play('idle');
+				menuItem.ID = i;
+				menuItems.add(menuItem);
+				menuItem.scrollFactor.set(0, 1);
+				menuItem.antialiasing = true;
+				if(i == 0){
+					menuItem.setGraphicSize(Std.int(menuItem.width * 0.78));
+					menuItem.alpha = 1;
+				}
+				else{
+					menuItem.setGraphicSize(Std.int(menuItem.width * 0.68));
+					menuItem.alpha = 0.8;
+				}
+				menuItem.x = 4 + (i * 450);
+				menuItem.y -= 300;
+			}
 		}
 
 		FlxG.camera.follow(camFollow, null, 0.06);
@@ -140,24 +175,50 @@ class MainMenuState extends MusicBeatState
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
+		
+
+
 		if (!selectedSomethin)
 		{
-			if (controls.UP_P)
+			if (Saves.Menu) //FlxG.keys.justPressed.RIGHT
 			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(-1);
+				if (FlxG.keys.justPressed.LEFT)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(-1);
+				}
+
+				if (FlxG.keys.justPressed.RIGHT)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(1);
+				}
+
+				if (controls.BACK)
+				{
+					FlxG.switchState(new TitleState());
+				}	
+			}
+			else 
+			{
+				if (controls.UP_P)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(-1);
+				}
+
+				if (controls.DOWN_P)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					changeItem(1);
+				}
+
+				if (controls.BACK)
+				{
+					FlxG.switchState(new TitleState());
+				}
 			}
 
-			if (controls.DOWN_P)
-			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(1);
-			}
-
-			if (controls.BACK)
-			{
-				FlxG.switchState(new TitleState());
-			}
 
 			if (controls.ACCEPT)
 			{
@@ -235,9 +296,11 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
+				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.y);
+				spr.alpha = 1;
 			}
 			spr.updateHitbox();
+
 		});
 	}
 }
