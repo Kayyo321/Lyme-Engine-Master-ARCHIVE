@@ -219,14 +219,15 @@ class Character extends FlxSprite
 				animation.addByPrefix('idle', 'monster idle', 24, false);
 				animation.addByPrefix('singUP', 'monster up note', 24, false);
 				animation.addByPrefix('singDOWN', 'monster down', 24, false);
-				animation.addByPrefix('singLEFT', 'Monster left note', 24, false);
-				animation.addByPrefix('singRIGHT', 'Monster Right note', 24, false);
+				animation.addByPrefix('singLEFT', 'Monster Right note', 24, false);
+				// phantom arcade, its not funny anymore, Im going to have to pull up on you 0_0
+				animation.addByPrefix('singRIGHT', 'Monster left note', 24, false);
 
 				addOffset('idle');
 				addOffset("singUP", -20, 50);
 				addOffset("singRIGHT", -51);
-				addOffset("singLEFT", -30);
-				addOffset("singDOWN", -40, -94);
+				addOffset("singLEFT", -37, 9);
+				addOffset("singDOWN", -43, -97);
 				playAnim('idle');
 			case 'pico':
 				tex = Paths.getSparrowAtlas('Pico_FNF_assetss');
@@ -321,15 +322,15 @@ class Character extends FlxSprite
 				animation.addByPrefix('hey', 'BF HEY', 24, false);
 
 				addOffset('idle', -5);
-				addOffset("singUP", -29, 27);
-				addOffset("singRIGHT", -38, -7);
-				addOffset("singLEFT", 12, -6);
-				addOffset("singDOWN", -10, -50);
-				addOffset("singUPmiss", -29, 27);
+				addOffset("singUP", -35, 31);
+				addOffset("singRIGHT", -51, -5);
+				addOffset("singLEFT", 6, -6);
+				addOffset("singDOWN", -6, -46);
+				addOffset("singUPmiss", -35, 31);
 				addOffset("singRIGHTmiss", -30, 21);
-				addOffset("singLEFTmiss", 12, 24);
-				addOffset("singDOWNmiss", -11, -19);
-				addOffset("hey", 7, 4);
+				addOffset("singLEFTmiss", 6, 17);
+				addOffset("singDOWNmiss", -19, -17);
+				addOffset("hey", -3, 6);
 
 				playAnim('idle');
 

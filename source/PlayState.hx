@@ -559,50 +559,6 @@ class PlayState extends MusicBeatState
 							bg.scrollFactor.set(0.8, 0.9);
 							bg.scale.set(6, 6);
 							add(bg);
-
-							/* 
-									var bg:FlxSprite = new FlxSprite(posX, posY).loadGraphic(Paths.image('weeb/evilSchoolBG'));
-									bg.scale.set(6, 6);
-									// bg.setGraphicSize(Std.int(bg.width * 6));
-									// bg.updateHitbox();
-									add(bg);
-
-									var fg:FlxSprite = new FlxSprite(posX, posY).loadGraphic(Paths.image('weeb/evilSchoolFG'));
-									fg.scale.set(6, 6);
-									// fg.setGraphicSize(Std.int(fg.width * 6));
-									// fg.updateHitbox();
-									add(fg);
-
-									wiggleShit.effectType = WiggleEffectType.DREAMY;
-									wiggleShit.waveAmplitude = 0.01;
-									wiggleShit.waveFrequency = 60;
-									wiggleShit.waveSpeed = 0.8;
-								*/
-
-							// bg.shader = wiggleShit.shader;
-							// fg.shader = wiggleShit.shader;
-
-							/* 
-										var waveSprite = new FlxEffectSprite(bg, [waveEffectBG]);
-										var waveSpriteFG = new FlxEffectSprite(fg, [waveEffectFG]);
-
-										// Using scale since setGraphicSize() doesnt work???
-										waveSprite.scale.set(6, 6);
-										waveSpriteFG.scale.set(6, 6);
-										waveSprite.setPosition(posX, posY);
-										waveSpriteFG.setPosition(posX, posY);
-
-										waveSprite.scrollFactor.set(0.7, 0.8);
-										waveSpriteFG.scrollFactor.set(0.9, 0.8);
-
-										// waveSprite.setGraphicSize(Std.int(waveSprite.width * 6));
-										// waveSprite.updateHitbox();
-										// waveSpriteFG.setGraphicSize(Std.int(fg.width * 6));
-										// waveSpriteFG.updateHitbox();
-
-										add(waveSprite);
-										add(waveSpriteFG);
-								*/
 					}
 					default:
 					{
@@ -1026,7 +982,7 @@ class PlayState extends MusicBeatState
 		vocals.volume = 0;	
 	}
 
-	function schoolIntro(?dialogueBox:DialogueBox):Void
+	function schoolIntro(?dialogueBox:DialogueBox):Void //this whole function is ninja muffin forgetting that tweens exist (JKJK NINJA MUFFIN DONT HURT ME)
 	{
 		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
 		black.scrollFactor.set();
@@ -1357,40 +1313,42 @@ class PlayState extends MusicBeatState
 			switch (curStage)
 			{
 				case 'school' | 'schoolEvil':
-					babyArrow.loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
-					babyArrow.animation.add('green', [6]);
-					babyArrow.animation.add('red', [7]);
-					babyArrow.animation.add('blue', [5]);
-					babyArrow.animation.add('purplel', [4]);
-
-					babyArrow.setGraphicSize(Std.int(babyArrow.width * daPixelZoom));
-					babyArrow.updateHitbox();
-					babyArrow.antialiasing = false;
-
-					switch (Math.abs(i))
+					if (!Saves.StepMainia || Saves.StepMainia)
 					{
-						case 0:
-							babyArrow.x += Note.swagWidth * 0;
-							babyArrow.animation.add('static', [0]);
-							babyArrow.animation.add('pressed', [4, 8], 12, false);
-							babyArrow.animation.add('confirm', [12, 16], 24, false);
-						case 1:
-							babyArrow.x += Note.swagWidth * 1;
-							babyArrow.animation.add('static', [1]);
-							babyArrow.animation.add('pressed', [5, 9], 12, false);
-							babyArrow.animation.add('confirm', [13, 17], 24, false);
-						case 2:
-							babyArrow.x += Note.swagWidth * 2;
-							babyArrow.animation.add('static', [2]);
-							babyArrow.animation.add('pressed', [6, 10], 12, false);
-							babyArrow.animation.add('confirm', [14, 18], 12, false);
-						case 3:
-							babyArrow.x += Note.swagWidth * 3;
-							babyArrow.animation.add('static', [3]);
-							babyArrow.animation.add('pressed', [7, 11], 12, false);
-							babyArrow.animation.add('confirm', [15, 19], 24, false);
-					}
+						babyArrow.loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
+						babyArrow.animation.add('green', [6]);
+						babyArrow.animation.add('red', [7]);
+						babyArrow.animation.add('blue', [5]);
+						babyArrow.animation.add('purplel', [4]);
 
+						babyArrow.setGraphicSize(Std.int(babyArrow.width * daPixelZoom));
+						babyArrow.updateHitbox();
+						babyArrow.antialiasing = false;
+
+						switch (Math.abs(i))
+						{
+							case 0:
+								babyArrow.x += Note.swagWidth * 0;
+								babyArrow.animation.add('static', [0]);
+								babyArrow.animation.add('pressed', [4, 8], 12, false);
+								babyArrow.animation.add('confirm', [12, 16], 24, false);
+							case 1:
+								babyArrow.x += Note.swagWidth * 1;
+								babyArrow.animation.add('static', [1]);
+								babyArrow.animation.add('pressed', [5, 9], 12, false);
+								babyArrow.animation.add('confirm', [13, 17], 24, false);
+							case 2:
+								babyArrow.x += Note.swagWidth * 2;
+								babyArrow.animation.add('static', [2]);
+								babyArrow.animation.add('pressed', [6, 10], 12, false);
+								babyArrow.animation.add('confirm', [14, 18], 12, false);
+							case 3:
+								babyArrow.x += Note.swagWidth * 3;
+								babyArrow.animation.add('static', [3]);
+								babyArrow.animation.add('pressed', [7, 11], 12, false);
+								babyArrow.animation.add('confirm', [15, 19], 24, false);
+						}
+					} //stepPixels
 				default:
 					if (!Saves.StepMainia)
 					{
@@ -1969,12 +1927,10 @@ class PlayState extends MusicBeatState
 									{
 										// Clip to strumline
 										var swagRect = new FlxRect(0, 0, daNote.frameWidth * 2, daNote.frameHeight * 2);
-										swagRect.height = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + Note.swagWidth / 2 - 65 - daNote.y) / daNote.scale.y;
+										swagRect.height = (strumLineNotes.members[Math.floor(Math.abs(daNote.noteData))].y + Note.swagWidth / 2 - 55 - daNote.y) / daNote.scale.y;
 										swagRect.y = daNote.frameHeight - swagRect.height;
 
 										daNote.clipRect = swagRect;
-
-										daNote.y -= daNote.height / 2;
 									}
 								}
 						}

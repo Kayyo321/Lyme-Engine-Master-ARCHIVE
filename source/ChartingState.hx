@@ -13,6 +13,7 @@ import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.addons.ui.FlxUIInputText;
+import flixel.util.FlxTimer;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.addons.ui.FlxUITooltip.FlxUITooltipStyle;
@@ -56,6 +57,8 @@ class ChartingState extends MusicBeatState
 	var curSong:String = 'Dadbattle';
 	var amountSteps:Int = 0;
 	var bullshitUI:FlxGroup;
+
+	var canPlayClaps:Bool = true;
 
 	var isMuteDad:Bool = false;
 	var isMuteBf:Bool = false;
@@ -664,7 +667,7 @@ class ChartingState extends MusicBeatState
 				{
 					FlxG.overlap(strumLine, note, function(_, _)
 					{
-						if(!claps.contains(note))
+						if(!claps.contains(note) && canPlayClaps)
 						{
 							claps.push(note);
 							FlxG.sound.play(Paths.sound('SNAP'));
@@ -795,7 +798,7 @@ class ChartingState extends MusicBeatState
 				FlxG.sound.music.pause();
 				vocals.pause();
 				dadVocals.pause();
-				claps.splice(0, claps.length);
+				// claps.splice(0, claps.length);
 
 				FlxG.sound.music.time -= (FlxG.mouse.wheel * Conductor.stepCrochet * 0.4);
 				vocals.time = FlxG.sound.music.time;
@@ -1034,6 +1037,16 @@ class ChartingState extends MusicBeatState
 					daBPM = _song.notes[i].bpm;
 			Conductor.changeBPM(daBPM);
 		}
+
+		new FlxTimer().start(0.1, function(stopIt:FlxTimer)
+		{
+			canPlayClaps = false;
+
+			new FlxTimer().start(0.1, function(stopIt:FlxTimer)
+			{
+				canPlayClaps = true;
+			});	
+		});
 
 		for (i in sectionInfo)
 		{
