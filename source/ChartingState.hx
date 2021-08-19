@@ -398,12 +398,24 @@ class ChartingState extends MusicBeatState
 		var tab_group_editor = new FlxUI(null, NewUI_box);
 		tab_group_editor.name = 'Editor';
 
-		hitsounds = new FlxUICheckBox(10, 100, null, null, "Play Hitsounds", 100);
+		hitsounds = new FlxUICheckBox(10, 150, null, null, "Play Hitsounds", 100);
 		hitsounds.checked = false;
 		hitsounds.callback = function()
 		{
 			playClaps = hitsounds.checked;
 		};
+
+		var restart = new FlxButton(10,250,"Reset Notes", function()
+            {
+                for (ii in 0..._song.notes.length)
+                {
+                    for (i in 0..._song.notes[ii].sectionNotes.length)
+                        {
+                            _song.notes[ii].sectionNotes = [];
+                        }
+                }
+                resetSection(true);
+            });
 
 		cyanUwU = new FlxUICheckBox(10, 50, null, null, "Chart Dark Theme", 100);
 		cyanUwU.checked = false;
@@ -412,7 +424,7 @@ class ChartingState extends MusicBeatState
 			cYaN = cyanUwU.checked;
 		};
 
-		dummyX = new FlxUICheckBox(10, 125, null, null, "Dummy Arrow", 100);
+		dummyX = new FlxUICheckBox(10, 200, null, null, "Dummy Arrow", 100);
 		dummyX.checked = false;
 		dummyX.callback = function()
 		{
@@ -431,14 +443,14 @@ class ChartingState extends MusicBeatState
 			FlxG.sound.music.volume = vol;
 		};
 
-		var downscroll = new FlxUICheckBox(10, 75, null, null, "Free Lock Dummy Arrow", 100);
+		var downscroll = new FlxUICheckBox(10, 100, null, null, "Free Lock Dummy Arrow", 100);
 		downscroll.checked = false;
 		downscroll.callback = function()
 		{
 			isDownscroll = downscroll.checked;
 		};
 
-		var muteDad = new FlxUICheckBox(125, 75, null, null, "Mute Dad Voice", 100);
+		var muteDad = new FlxUICheckBox(125, 100, null, null, "Mute Dad Voice", 100);
 		muteDad.checked = false;
 		muteDad.callback = function()
 		{
@@ -450,7 +462,7 @@ class ChartingState extends MusicBeatState
 			dadVocals.volume = vol;
 		};
 
-		var muteBf = new FlxUICheckBox(125, 100, null, null, "Mute Bf Voice", 100);
+		var muteBf = new FlxUICheckBox(125, 150, null, null, "Mute Bf Voice", 100);
 		muteBf.checked = false;
 		muteBf.callback = function()
 		{
@@ -469,6 +481,7 @@ class ChartingState extends MusicBeatState
 		tab_group_editor.add(downscroll);
 		tab_group_editor.add(muteDad);
 		tab_group_editor.add(muteBf);
+		tab_group_editor.add(restart);
 
 		NewUI_box.addGroup(tab_group_editor);
 	}
