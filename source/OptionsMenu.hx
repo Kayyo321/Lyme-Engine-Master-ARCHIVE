@@ -13,6 +13,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
+import flixel.util.FlxTimer;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
 
@@ -45,7 +46,8 @@ class OptionsMenu extends MusicBeatState
 			new BlueNotes("make all scrolling notes darker"),
 			new Icons("show health icons on healthbar"),
 			new Bar("show health bar"), 
-			new CoolMenu("Toggle A New Menu Layout!")
+			new CoolMenu("Toggle A New Menu Layout!"),
+			new CoolMenuTrans("Toggle A Fluent Menu Transition!")
 			// new BotPlay("have a bot play all your notes for you") fix dis when you got the mental stability XD
 		]),
 		new OptionCategory("Lyme Engine Links", [
@@ -66,6 +68,16 @@ class OptionsMenu extends MusicBeatState
 	{
 		instance = this;
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic(Paths.image("menuDesat"));
+
+		Saves.FluentMenu = FlxG.save.data.MenuTrans;
+
+		if (Saves.FluentMenu)
+			FlxG.camera.x += 1500;
+		new FlxTimer().start(0.75, function(tmr:FlxTimer)
+			{
+				if (Saves.FluentMenu)
+					FlxTween.tween(camera, {x: camera.x - 1500}, 0.25, {ease: FlxEase.circOut});
+			});
 
 		menuBG.color = 0xFfaE82Df; //0xFFea71fd
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
@@ -127,7 +139,11 @@ class OptionsMenu extends MusicBeatState
 		if (acceptInput)
 		{
 			if (controls.BACK && !isCat)
+			{
 				FlxG.switchState(new MainMenuState());
+				if (Saves.FluentMenu)
+					FlxTween.tween(camera, {y: camera.y - 750}, 0.25, {ease: FlxEase.circOut});
+			}
 			else if (controls.BACK)
 			{
 				isCat = false;

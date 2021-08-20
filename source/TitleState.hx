@@ -109,6 +109,8 @@ class TitleState extends MusicBeatState
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
 	var titleText:FlxSprite;
+	var bbbb:FlxText;
+	var menu:FlxSprite;
 
 	function startIntro()
 	{
@@ -142,11 +144,18 @@ class TitleState extends MusicBeatState
 		Conductor.changeBPM(102);
 		persistentUpdate = true;
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		// bg.antialiasing = true;
-		// bg.setGraphicSize(Std.int(bg.width * 0.6));
-		// bg.updateHitbox();
-		add(bg);
+		Saves.FluentMenu = FlxG.save.data.MenuTrans;
+
+		// var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+		// add(bg);
+
+		menu = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		menu.color = FlxColor.CYAN;
+		menu.alpha = 0.3;
+		add(menu);
+
+		if (Saves.FluentMenu)
+			FlxTween.tween(menu, {alpha: 0.8}, 0.7, {ease: FlxEase.quadInOut, type: PINGPONG});
 
 		logoBl = new FlxSprite(-150, -100);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
@@ -287,27 +296,15 @@ class TitleState extends MusicBeatState
 			transitioning = true;
 			// FlxG.sound.music.stop();
 
-			new FlxTimer().start(2, function(tmr:FlxTimer)
+			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-				// Check if version is outdated
+				if (Saves.FluentMenu)
+					FlxTween.tween(camera, {y: camera.y - 750}, 0.25, {ease: FlxEase.circOut});
+			});
 
-				var version:String = "v" + Application.current.meta.get('version');
-
-				if (version.trim() != NGio.GAME_VER_NUMS.trim() && !OutdatedSubState.leftState)
-				{
-					// FlxG.sound.music.stop();
-					FlxG.switchState(new MainMenuState());
-					trace('OLD VERSION!');
-					trace('old ver');
-					trace(version.trim());
-					trace('cur ver');
-					trace(NGio.GAME_VER_NUMS.trim());
-				}
-				else
-				{
-					// FlxG.sound.music.stop();
-					FlxG.switchState(new MainMenuState());
-				}
+			new FlxTimer().start(1.35, function(tmr:FlxTimer)
+			{
+				FlxG.switchState(new MainMenuState());
 			});
 			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 		}
@@ -425,19 +422,9 @@ class TitleState extends MusicBeatState
 		{
 			remove(ngSpr);
 			remove(credGroup);
+			skippedIntro = true;
 
-			logoBl.y -= 100;
-			gfDance.x += 100;
-
-			FlxTween.tween(logoBl, {y: logoBl.y + 100}, 0.75, {
-				onComplete: function(tween:FlxTween)
-				{
-					FlxG.camera.flash(FlxColor.WHITE, 4);
-					skippedIntro = true;
-				}
-			});
-
-			FlxTween.tween(gfDance, {x: gfDance.x - 100}, 0.75);
+			FlxTween.tween(camera, {zoom: 1.15}, 0.6, {ease: FlxEase.quadInOut, type: PINGPONG});
 		}
 	}
 }

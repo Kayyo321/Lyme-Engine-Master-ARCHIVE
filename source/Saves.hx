@@ -22,6 +22,7 @@ class Saves
     public static var BotPlay:Bool;
     public static var StepMainia:Bool;
     public static var Menu:Bool;
+    public static var FluentMenu:Bool;
 
     // hi lol
 }

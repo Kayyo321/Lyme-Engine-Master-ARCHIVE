@@ -47,8 +47,18 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		Saves.FluentMenu = FlxG.save.data.MenuTrans;
 
 		Saves.Menu = FlxG.save.data.menu;
+
+		if (Saves.FluentMenu)
+			FlxG.camera.y += 750;
+
+		new FlxTimer().start(1, function(tmr:FlxTimer)
+			{
+				if (Saves.FluentMenu)
+					FlxTween.tween(camera, {y: camera.y - 750}, 0.25, {ease: FlxEase.circOut});
+			});
 
 		resetKeys();
 
@@ -236,6 +246,12 @@ class MainMenuState extends MusicBeatState
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 
 					FlxFlicker.flicker(magenta, 1.1, 0.15, false);
+
+					new FlxTimer().start(0.75, function(tmr:FlxTimer)
+						{
+							if (Saves.FluentMenu)
+								FlxTween.tween(camera, {x: camera.x - 1500}, 0.25, {ease: FlxEase.circOut});
+						});
 
 					menuItems.forEach(function(spr:FlxSprite)
 					{

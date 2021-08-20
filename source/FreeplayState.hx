@@ -12,6 +12,9 @@ import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import lime.utils.Assets;
+import flixel.util.FlxTimer;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 
 using StringTools;
 
@@ -36,6 +39,8 @@ class FreeplayState extends MusicBeatState
 	override function create()
 	{
 		var initSonglist = CoolUtil.coolTextFile(Paths.txt('freeplaySonglist'));
+
+		Saves.FluentMenu = FlxG.save.data.MenuTrans;
 
 		for (i in 0...initSonglist.length)
 		{
@@ -102,6 +107,14 @@ class FreeplayState extends MusicBeatState
 			iconArray.push(icon);
 			add(icon);
 		}
+
+		if (Saves.FluentMenu)
+			FlxG.camera.x += 1500;
+		new FlxTimer().start(0.75, function(tmr:FlxTimer)
+			{
+				if (Saves.FluentMenu)
+					FlxTween.tween(camera, {x: camera.x - 1500}, 0.25, {ease: FlxEase.circOut});
+			});
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
 		// scoreText.autoSize = false;
@@ -208,6 +221,8 @@ class FreeplayState extends MusicBeatState
 		if (controls.BACK)
 		{
 			FlxG.switchState(new MainMenuState());
+			if (Saves.FluentMenu)
+				FlxTween.tween(camera, {y: camera.y - 750}, 0.25, {ease: FlxEase.circOut});
 			FlxG.sound.music.stop();
 		}
 
@@ -223,7 +238,13 @@ class FreeplayState extends MusicBeatState
 
 			PlayState.storyWeek = songs[curSelected].week;
 			trace('CUR WEEK' + PlayState.storyWeek);
-			LoadingState.loadAndSwitchState(new PlayState());
+			new FlxTimer().start(0.75, function(tmr:FlxTimer)
+				{
+					if (Saves.FluentMenu)
+						FlxTween.tween(camera, {x: camera.x - 1500}, 0.25, {ease: FlxEase.circOut});
+					LoadingState.loadAndSwitchState(new PlayState());
+				});
+			
 		}
 	}
 

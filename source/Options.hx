@@ -503,6 +503,27 @@ class CoolMenu extends Option
 
 	private override function updateDisplay():String
 	{
-		return FlxG.save.data.menu ? "Horizontal Menu Layout" : "Vertical  Menu Layout";
+		return FlxG.save.data.menu ? "Horizontal Menu Layout" : "Vertical Menu Layout";
+	}
+}
+
+class CoolMenuTrans extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+	}
+
+	public override function press():Bool
+	{
+		FlxG.save.data.MenuTrans = !FlxG.save.data.MenuTrans;
+		display = updateDisplay();
+		return true;
+	}
+
+	private override function updateDisplay():String
+	{
+		return FlxG.save.data.MenuTrans ? "fluent menu transition" : "normal menu transition";
 	}
 }

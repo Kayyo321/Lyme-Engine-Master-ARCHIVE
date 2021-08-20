@@ -14,7 +14,10 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 
 using StringTools;
 
@@ -76,11 +79,21 @@ class StoryMenuState extends MusicBeatState
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
+		Saves.FluentMenu = FlxG.save.data.MenuTrans;
+
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 		}
+
+		if (Saves.FluentMenu)
+			FlxG.camera.x += 1500;
+		new FlxTimer().start(0.75, function(tmr:FlxTimer)
+			{
+				if (Saves.FluentMenu)
+					FlxTween.tween(camera, {x: camera.x - 1500}, 0.25, {ease: FlxEase.circOut});
+			});
 
 		persistentUpdate = persistentDraw = true;
 
@@ -282,6 +295,8 @@ class StoryMenuState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			movedBack = true;
 			FlxG.switchState(new MainMenuState());
+			if (Saves.FluentMenu)
+				FlxTween.tween(camera, {y: camera.y - 750}, 0.25, {ease: FlxEase.circOut});
 		}
 
 		super.update(elapsed);
