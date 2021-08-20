@@ -186,6 +186,7 @@ class PlayState extends MusicBeatState
 		Saves.BotPlay = FlxG.save.data.botPlay;
 		Saves.StepMainia = FlxG.save.data.stepMainia;
 		Saves.FluentMenu = FlxG.save.data.menuTrans;
+		Saves.SmallArrows = FlxG.save.data.smallArrows;
 
 		trace("loaded " + shitGotLoaded + " changable shits");
 
@@ -1526,7 +1527,13 @@ class PlayState extends MusicBeatState
 
 				cpuStrums.forEach(function(spr:FlxSprite)
 				{
-					spr.visible = false;
+					if (!Saves.SmallArrows)
+						spr.visible = false;
+					else
+					{
+						spr.setGraphicSize(Std.int(spr.width * 0.65));
+						spr.x += 25;
+					}
 				});
 			}
 
@@ -1939,6 +1946,9 @@ class PlayState extends MusicBeatState
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
+				if (Saves.SmallArrows && !daNote.mustPress)
+					daNote.setGraphicSize(Std.int(daNote.width * 0.65));
+
 				if (daNote.y > FlxG.height)
 				{
 					daNote.active = false;

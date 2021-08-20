@@ -30,6 +30,7 @@ class OptionsMenu extends MusicBeatState
 			new DownscrollOption("change position of strum line"),
 			new GhostTapOption("Cleaner Inputs: ghost tapping, better timing window, Harsher inputs: no ghost tapping, harsher timing window"),
 			new MiddleScroll("put the strum line in the middle"),
+			new SmallArrows("show p2 arrows on middle scroll"),
 			new Hitsound("Play a snap noise whenever you press a button in game")
 		]),
 		new OptionCategory("Visual", [

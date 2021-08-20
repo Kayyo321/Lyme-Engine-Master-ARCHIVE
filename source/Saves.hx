@@ -23,6 +23,7 @@ class Saves
     public static var StepMainia:Bool;
     public static var Menu:Bool;
     public static var FluentMenu:Bool;
+    public static var SmallArrows:Bool;
 
     // hi lol
 }
