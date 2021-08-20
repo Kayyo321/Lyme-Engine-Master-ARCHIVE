@@ -1946,8 +1946,10 @@ class PlayState extends MusicBeatState
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
-				if (Saves.SmallArrows && !daNote.mustPress)
+				if (Saves.SmallArrows && !daNote.mustPress && !daNote.isSustainNote && Saves.MiddleScroll)
 					daNote.setGraphicSize(Std.int(daNote.width * 0.65));
+				else if (Saves.SmallArrows && !daNote.mustPress && daNote.isSustainNote && Saves.MiddleScroll)
+					daNote.setGraphicSize(Std.int(daNote.width * 0.85));
 
 				if (daNote.y > FlxG.height)
 				{
@@ -2055,8 +2057,11 @@ class PlayState extends MusicBeatState
 						if (Math.abs(daNote.noteData) == spr.ID)
 						{
 							spr.animation.play('confirm', true);
+
+							if (daNote.isSustainNote && Saves.SmallArrows && !Saves.MiddleScroll)
+								daNote.y += daNote.prevNote.height;
 						}
-						if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school') && !Saves.StepMainia)
+						if (spr.animation.curAnim.name == 'confirm' && !curStage.startsWith('school'))
 						{
 							spr.centerOffsets();
 							spr.offset.x -= 13;
