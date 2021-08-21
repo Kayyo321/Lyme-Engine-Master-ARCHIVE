@@ -32,10 +32,13 @@ class Note extends FlxSprite
 	public static var GREEN_NOTE:Int = 2;
 	public static var BLUE_NOTE:Int = 1;
 	public static var RED_NOTE:Int = 3;
+	public var sustainActive:Bool = true;
 
 	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false)
 	{
 		super();
+
+		Saves.HoldNoteAlpha = FlxG.save.data.susAlpha;
 
 		Saves.StepMainia = FlxG.save.data.stepMainia;
 
@@ -200,6 +203,9 @@ class Note extends FlxSprite
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (isSustainNote)
+			alpha = Saves.HoldNoteAlpha;
 
 		if (mustPress)
 		{

@@ -43,6 +43,8 @@ class ChartingState extends MusicBeatState
 	var UI_box:FlxUITabMenu;
 	var NewUI_box:FlxUITabMenu;
 
+	var optomize:Bool = false;
+
 	var curSection:Int = 0;
 
 	public static var lastSection:Int = 0;
@@ -116,6 +118,13 @@ class ChartingState extends MusicBeatState
 		gridBG = FlxGridOverlay.create(GRID_SIZE, GRID_SIZE, GRID_SIZE * 8, GRID_SIZE * 16);
 		add(gridBG);
 
+		var gray:FlxSprite = new FlxSprite(gridBG.x, gridBG.y).makeGraphic(Std.int(gridBG.width), Std.int(gridBG.height));
+		if (optomize)
+		{
+			add(gray);
+			remove(gridBG);
+		}
+
 		leftIcon = new HealthIcon('bf');
 		rightIcon = new HealthIcon('dad');
 		leftIcon.scrollFactor.set(1, 1);
@@ -153,7 +162,7 @@ class ChartingState extends MusicBeatState
 		}
 
 		FlxG.mouse.visible = true;
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('LymeData', 'LymeSaves');
 
 		tempBpm = _song.bpm;
 
@@ -179,10 +188,24 @@ class ChartingState extends MusicBeatState
 		dddd = new FlxSprite(dummyArrow.x, dummyArrow.y).loadGraphic(Paths.image('xxxx'));
 		add(dddd);
 
-		var tabs = [
-			{name: "Song", label: 'Song'},
-			{name: "Section", label: 'Section'},
-		];
+		var tabs;
+
+		if (!optomize)
+		{
+			tabs = [
+				{name: "Song", label: 'Song'},
+				{name: "Section", label: 'Section'}
+			];
+		}
+		else 
+		{
+			tabs = [
+				{name: "Song", label: 'Song'},
+				{name: "Section", label: 'Section'},
+				{name: "Note", label: 'Note'},
+				{name: "Editor", label: 'Editor'}
+			];
+		}
 
 		var newTabs = [
 			{name: "Note", label: 'Note'},
@@ -211,6 +234,9 @@ class ChartingState extends MusicBeatState
 
 		add(curRenderedNotes);
 		add(curRenderedSustains);
+
+		if (optomize)
+			remove(NewUI_box);
 
 		super.create();
 	}
@@ -342,20 +368,21 @@ class ChartingState extends MusicBeatState
 
 		var clearSectionButton:FlxButton = new FlxButton(10, 150, "Clear", clearSection);
 
-		var swapSection:FlxButton = new FlxButton(10, 170, "Swap section", function()
+		var swapSection:FlxButton = new FlxButton(10, 170, "Swap Section", function()
 		{
 			for (i in 0..._song.notes[curSection].sectionNotes.length)
-			{
-				var note = _song.notes[curSection].sectionNotes[i];
-				note[1] = (note[1] + 4) % 8;
-				_song.notes[curSection].sectionNotes[i] = note;
-				updateGrid();
-			}
+				{
+					var note = _song.notes[curSection].sectionNotes[i];
+					note[1] = (note[1] + 4) % 8;
+					_song.notes[curSection].sectionNotes[i] = note;
+					updateGrid();
+				}
 		});
 
-		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, "BF's Section", 100);
+		check_mustHitSection = new FlxUICheckBox(10, 30, null, null, "Must hit section", 100);
 		check_mustHitSection.name = 'check_mustHit';
 		check_mustHitSection.checked = true;
+		// _song.needsVoices = check_mustHit.checked;
 		
 
 		check_altAnim = new FlxUICheckBox(10, 400, null, null, "Alt Animation", 100);
@@ -367,12 +394,12 @@ class ChartingState extends MusicBeatState
 		tab_group_section.add(stepperLength);
 		tab_group_section.add(stepperSectionBPM);
 		tab_group_section.add(stepperCopy);
-		tab_group_section.add(check_mustHitSection);
 		tab_group_section.add(check_altAnim);
 		tab_group_section.add(check_changeBPM);
 		tab_group_section.add(copyButton);
 		tab_group_section.add(clearSectionButton);
 		tab_group_section.add(swapSection);
+		tab_group_section.add(check_mustHitSection);
 
 		UI_box.addGroup(tab_group_section);
 	}
@@ -388,12 +415,12 @@ class ChartingState extends MusicBeatState
 		stepperSusLength.value = 0;
 		stepperSusLength.name = 'note_susLength';
 
-		var applyLength:FlxButton = new FlxButton(100, 10, 'Apply');
-
 		tab_group_note.add(stepperSusLength);
-		tab_group_note.add(applyLength);
 
-		NewUI_box.addGroup(tab_group_note);
+		if (!optomize)
+			NewUI_box.addGroup(tab_group_note);
+		else 
+			UI_box.addGroup(tab_group_note);
 	}
 
 	function addEditorUI():Void 
@@ -486,7 +513,10 @@ class ChartingState extends MusicBeatState
 		tab_group_editor.add(muteBf);
 		tab_group_editor.add(restart);
 
-		NewUI_box.addGroup(tab_group_editor);
+		if (!optomize)
+			NewUI_box.addGroup(tab_group_editor);
+		else 
+			UI_box.addGroup(tab_group_editor);
 	}
 
 	function loadSong(daSong:String):Void
@@ -725,12 +755,21 @@ class ChartingState extends MusicBeatState
 		{
 			lastSection = curSection;
 
-			PlayState.SONG = _song;
-			PlayState.storyDifficulty = curDifficulty;
-			FlxG.sound.music.stop();
-			dadVocals.stop();
-			vocals.stop();
-			FlxG.switchState(new PlayState());
+			
+			if (FlxG.random.bool(1))
+			{
+				// gitaroo man easter egg
+				FlxG.switchState(new WhatTheFuckState());
+			}
+			else
+			{
+				PlayState.SONG = _song;
+				PlayState.storyDifficulty = curDifficulty;
+				FlxG.sound.music.stop();
+				dadVocals.stop();
+				vocals.stop();
+				FlxG.switchState(new PlayState());
+			}
 		}
 
 		if (FlxG.keys.justPressed.E)
@@ -985,24 +1024,18 @@ class ChartingState extends MusicBeatState
 	//rightIcon.setPosition(gridBG.width / 2, -100);
 
 	function updateHeads():Void
-	{
-		if (check_mustHitSection.checked)
 		{
-			leftIcon.x = 0;
-			rightIcon.x = gridBG.width / 2;
-
-			leftIcon.y = -100;
-			rightIcon.y = -100;
+			if (check_mustHitSection.checked)
+			{
+				leftIcon.animation.play('bf');
+				rightIcon.animation.play('dad');
+			}
+			else
+			{
+				leftIcon.animation.play('dad');
+				rightIcon.animation.play('bf');
+			}
 		}
-		else
-		{
-			leftIcon.x = gridBG.width / 2; 
-			rightIcon.x = 0;
-
-			leftIcon.y = -100;
-			rightIcon.y = -100;
-		}
-	}
 
 	function updateNoteUI():Void
 	{

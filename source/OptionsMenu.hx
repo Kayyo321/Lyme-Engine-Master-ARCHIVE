@@ -38,6 +38,7 @@ class OptionsMenu extends MusicBeatState
 			new CountersAlpha("Change the transparancy of the counters in game"),
 			new NoteEffects("Show note effects at begining of song"),
 			new StepMainia("Use The Note Skins From Step Mainia"),
+			new SusNoteAlpha("change the transparancy of the hold notes in game!"),
 			new MiddleScrollBox("change the transparancy of the black box on middle scroll! (0 = not there)"),
 			#if desktop
 				new FPSCapOption("cap your fps at your repective limit")

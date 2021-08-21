@@ -1,5 +1,6 @@
 package;
 
+import flixel.text.FlxText;
 import lime.app.Application;
 import lime.system.DisplayMode;
 import flixel.util.FlxColor;
@@ -546,5 +547,48 @@ class SmallArrows extends Option
 	private override function updateDisplay():String
 	{
 		return FlxG.save.data.smallArrows ? "show cpu strums on middle" : "hide cpu strums middle";
+	}
+}
+
+class SusNoteAlpha extends Option
+{
+	public function new(desc:String)
+	{
+		super();
+		description = desc;
+		acceptValues = true;
+	}
+
+	public override function press():Bool
+	{
+		return false;
+	}
+
+	private override function updateDisplay():String
+	{
+		return "Hold Note transparancy";
+	}
+
+	public override function right():Bool
+	{
+		if (FlxG.save.data.susAlpha > 0.9)
+			FlxG.save.data.susAlpha = 1;
+		else  
+			FlxG.save.data.susAlpha += 0.1;
+		return true;
+	}
+
+	public override function left():Bool
+	{
+		if (FlxG.save.data.susAlpha < 0.4)
+			FlxG.save.data.susAlpha = 0.3;
+		else  
+			FlxG.save.data.susAlpha -= 0.1;
+		return true;
+	}
+
+	override function getValue():String
+	{
+		return "Hold Note transparancy: " + FlxG.save.data.susAlpha;
 	}
 }

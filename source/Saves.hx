@@ -24,6 +24,7 @@ class Saves
     public static var Menu:Bool;
     public static var FluentMenu:Bool;
     public static var SmallArrows:Bool;
+    public static var HoldNoteAlpha:Float;
 
     // hi lol
 }
