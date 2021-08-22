@@ -755,10 +755,15 @@ class ChartingState extends MusicBeatState
 		{
 			lastSection = curSection;
 
+			var newRan:Int = 0;
+			newRan = FlxG.random.int(1, 10);
+
+			var matcher:Int = 0;
+			matcher = FlxG.random.int(1, 10);
 			
-			if (FlxG.random.bool(1))
+			if (newRan == matcher && _song.player2 == 'monster' || newRan == matcher && _song.player2 == 'monster-christmas')
 			{
-				// gitaroo man easter egg
+				// the scariest fuckin shit ever
 				FlxG.switchState(new WhatTheFuckState());
 			}
 			else
